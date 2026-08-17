@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="放課後スワイプ：現時点で決まったことの全記録">
+<title>放課後スワイプ｜決定事項</title>
+<style>
+  :root {
+    --ground:#F3F4F7; --surface:#FFFFFF; --surface-2:#EFF0F4;
+    --line:#DCDEE6; --text:#1B1D2A; --text-2:#565A6E; --text-3:#888CA0;
+    --amber:#B85F0F; --amber-soft:#F6E6D2; --ok:#1F7A54; --ng:#B03A35;
+    --font: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
+    --mono: ui-monospace,"SFMono-Regular","Consolas",monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#14161F; --surface:#1D202B; --surface-2:#252936;
+      --line:#333849; --text:#ECEDF2; --text-2:#A9ADBE; --text-3:#787D91;
+      --amber:#EFA24A; --amber-soft:#3A2C18; --ok:#48C68C; --ng:#E4645E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#14161F; --surface:#1D202B; --surface-2:#252936;
+    --line:#333849; --text:#ECEDF2; --text-2:#A9ADBE; --text-3:#787D91;
+    --amber:#EFA24A; --amber-soft:#3A2C18; --ok:#48C68C; --ng:#E4645E;
+  }
+
+  *,*::before,*::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin:0; background:var(--ground); color:var(--text);
+    font-family:var(--font); line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page { max-width: 680px; margin: 0 auto; padding: 30px 18px 72px; }
+
+  header { margin-bottom: 34px; }
+  .eyebrow {
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--text-3);
+  }
+  h1 { font-size: 27px; font-weight: 800; letter-spacing:.01em; margin:.35em 0 .3em; text-wrap:balance; }
+  .lede { color:var(--text-2); font-size:14.5px; }
+
+  h2 {
+    font-size:18px; font-weight:800; margin:44px 0 14px;
+    padding-top:16px; border-top:1px solid var(--line); text-wrap:balance;
+  }
+  h2 .num {
+    font-family:var(--mono); font-size:11px; color:var(--amber);
+    letter-spacing:.14em; display:block; margin-bottom:4px; font-weight:600;
+  }
+  h3 { font-size:15px; font-weight:700; margin:24px 0 8px; }
+  p { margin: 0 0 14px; font-size:14.5px; }
+  strong { font-weight:700; }
+  em { font-style:normal; background:var(--amber-soft); padding:1px 5px; border-radius:4px; }
+
+  ul, ol { margin:0 0 14px; padding-left:1.3em; }
+  li { margin-bottom:7px; font-size:14.5px; }
+
+  .card {
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:13px; padding:16px 18px; margin:0 0 16px;
+  }
+  .card.accent { border-color:var(--amber); border-width:2px; }
+  .card h3 { margin-top:0; }
+  .card p:last-child, .card ul:last-child, .card ol:last-child { margin-bottom:0; }
+
+  .kicker {
+    font-family:var(--mono); font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--text-3); margin-bottom:6px;
+  }
+  .card.accent .kicker { color:var(--amber); }
+
+  .flow { list-style:none; padding:0; margin:0; counter-reset:step; }
+  .flow li {
+    position:relative; padding-left:36px; margin-bottom:14px;
+    counter-increment:step;
+  }
+  .flow li::before {
+    content: counter(step);
+    position:absolute; left:0; top:1px;
+    width:24px; height:24px; border-radius:50%;
+    background:var(--amber); color:#fff;
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    display:grid; place-items:center;
+  }
+
+  .scroll { overflow-x:auto; margin:0 0 16px; }
+  table { border-collapse:collapse; width:100%; min-width:420px; font-size:13.5px; }
+  th, td { text-align:left; padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:11.5px; letter-spacing:.06em; color:var(--text-3); font-weight:700; white-space:nowrap; }
+  tbody tr:last-child td { border-bottom:none; }
+
+  .verdict { font-weight:700; white-space:nowrap; }
+  .verdict.y { color:var(--ok); }
+  .verdict.n { color:var(--ng); }
+
+  .quote {
+    border-left:3px solid var(--amber); padding:2px 0 2px 14px;
+    color:var(--text-2); font-size:14px; margin:0 0 14px;
+  }
+
+  .why {
+    background:var(--surface-2); border-radius:9px; padding:11px 13px;
+    font-size:13.5px; color:var(--text-2); margin:10px 0 0;
+  }
+  .why b { color:var(--text); }
+
+  .links { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 0; }
+  .links a {
+    padding:10px 16px; border-radius:10px; text-decoration:none;
+    background:var(--amber); color:#fff; font-weight:700; font-size:14px;
+  }
+  .links a.ghost { background:transparent; color:var(--amber); border:1px solid var(--amber); }
+
+  footer {
+    margin-top:48px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--text-3);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="eyebrow">Okazaki / 2026-08-17</div>
+  <h1>放課後スワイプ<br>決まったことの全記録</h1>
+  <p class="lede">高校生が放課後に飯へ行くまでの、言い出す役を引き受けるアプリ。ここまでの議論で決まったこと、却下したこと、まだ決まっていないことを全部並べてあります。</p>
+  <div class="links">
+    <a href="./index.html">デモを触る</a>
+  </div>
+</header>
+
+<h2><span class="num">01</span>これは何か</h2>
+
+<p>岡崎の高校生が、放課後に<strong>誰かと飯に行くまで</strong>を成立させるアプリ。店を探すアプリではありません。</p>
+
+<div class="card accent">
+  <div class="kicker">提供価値</div>
+  <h3>決定の責任と、誘う責任を引き受ける</h3>
+  <p>「どこでもいい」は無関心ではなく、<strong>決定の責任を取りたくない</strong>ということ。自分が決めた店がハズレだと気まずいから、みんな譲り合って5分溶ける。</p>
+  <p>同じように「一緒に行こう」と言い出すのも、断られるリスクを言い出した側が全部背負う行為。だから誘われない。</p>
+  <p>このアプリが引き受けるのは店の情報ではなく、<em>この2つの責任</em>です。</p>
+</div>
+
+<p>だから機能の採否は一本の基準で決まります。<strong>「決定と誘いの責任を軽くするか?」</strong> イエスなら作る、ノーなら作らない。</p>
+
+<h2><span class="num">02</span>ターゲット</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>項目</th><th>決定</th></tr></thead>
+  <tbody>
+    <tr><td>エリア</td><td>岡崎（学校最寄り〜岡崎駅の徒歩圏。まず30〜50軒）</td></tr>
+    <tr><td>ユーザー</td><td><strong>高校生</strong></td></tr>
+    <tr><td>広告主</td><td>大学 / 専門学校 / 予備校・塾 / 自動車学校 / バイト求人</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>ターゲットは 高校生 → 中学生 → 高校生 と動いた末に確定。中学生に降ろした理由は「岡崎周辺に大学が少ないから広告主を私立高校にする→ならターゲットは中学生」でしたが、<strong>この前提が誤りでした</strong>。</p>
+
+<div class="why">
+  <b>大学の商圏は電車1時間圏</b>で、近所にある必要がない。名古屋の大学・専門学校は普通に岡崎の高校生を採りに来ます。高校生向けの広告主はむしろ厚い。<br>
+  そのうえ高校生に戻すと、親の承認なしにアプリを入れられる／12歳が混ざる問題が消える／バイト代があるので外食する金がある／電車で複数エリアに行けるので店が枯れにくい、と他の懸念もまとめて軽くなります。
+</div>
+
+<h3>誰と行くための機能か</h3>
+<ul>
+  <li><strong>他校の友達</strong>（価値が一番濃い）— 中学の友達が別々の高校に散り、時程も部活も違うのでいつ空いてるか分からない</li>
+  <li><strong>同じ学校の友達</strong>も対象 — クラスが違えば動きは別だし、一度家に帰れば仕切り直しになる</li>
+</ul>
+
+<h2><span class="num">03</span>毎日どう使われるか</h2>
+
+<ol class="flow">
+  <li><strong>通知が1本届く —「今日、外で食う？」</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">「暇？」ではないのが肝。質問に意思が入るので、マッチした時点で両者とも外食する気がある状態になる。</span></li>
+  <li><strong>昼 / 放課後 / 夜 のどれかを1タップ</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">押さない＝表明なし。押した人同士だけがマッチする。</span></li>
+  <li><strong>合う友達がいたら、両方に同時に届く</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">お互い宣言済みなので、言い出す役がいない。断られる余地もない。</span></li>
+  <li><strong>今日の3枚をスワイプ</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">カタログ全部ではなく、その日の手札だけ。10秒で終わる。</span></li>
+  <li><strong>今日の1軒が出る</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">何があっても必ず1軒。ゼロ件は出さない。</span></li>
+</ol>
+
+<div class="card">
+  <div class="kicker">マッチしなかった日</div>
+  <p>「今日の放課後、友達の2人が外で食う予定」と<strong>人数だけ匿名で</strong>出す。名前は出さないし、名指しで誘う画面も作らない。押したのに誰も来なかった、という体験を発生させないため。</p>
+</div>
+
+<h2><span class="num">04</span>主要な設計判断</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>決めたこと</th><th>理由</th></tr></thead>
+  <tbody>
+    <tr><td>質問は「暇？」ではなく<strong>「今日、外で食う？」</strong></td><td>暇なだけでは飯の気分か分からず、結局「飯行く?」と言い出す役が残る。質問を変えると時間の表明そのものに意思が入る</td></tr>
+    <tr><td>時間枠は<strong>昼/放課後/夜の3つ</strong></td><td>15〜22時は広すぎ、部活の前後で全く違う。粗すぎると「放課後と言ったのに20時じゃん」で一度に信用を失う。昼枠はテスト期間に効く</td></tr>
+    <tr><td>マッチは<strong>時間が一次、店が二次</strong></td><td>両方一致を条件にすると成立率が激減して通知が飛ばない。時間さえ合えば店は後から決まればいい</td></tr>
+    <tr><td><strong>押さない＝表明なし</strong></td><td>デフォルトを「暇」にすると、行く気のない人がマッチして断ることになり「断られない誘い」の原則が壊れる</td></tr>
+    <tr><td><strong>相手の予定は見せない</strong></td><td>見えると「こっちから誘う」が復活して、消したはずの摩擦が戻る。マッチ時に双方へ同時通知のみ</td></tr>
+    <tr><td><strong>必ず1軒返す</strong></td><td>「決定を売る」のに決まらないのは自己矛盾。全部パスしても一番安い店を出す</td></tr>
+    <tr><td>毎日は<strong>3枚だけ</strong></td><td>カタログを全部めくらせると在庫が数日で尽きる。同じ30軒でも手札が毎日変われば尽きない</td></tr>
+    <tr><td>友達グラフは<strong>閉じる</strong></td><td>QR・招待で対面で交換した相手のみ。見知らぬ相手へのメッセージ機能なし、プロフィール外部公開なし。未成年なので出会い系サイト規制法・愛知県青少年保護育成条例の射程に入れない</td></tr>
+    <tr><td>「みんなで決める」は<strong>その場限りの部屋</strong></td><td>永続グループは作る手間・誰を入れるかの気まずさ・放置される問題を持ち込む。4桁コードで立てて、終わったら消える</td></tr>
+    <tr><td>グループの決定は<strong>多数決</strong></td><td>全員一致を条件にすると3人以上でゼロ件になる。同点は安い方でタイブレーク</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="num">05</span>収益モデル</h2>
+
+<p>飲食店からは取りません。<strong>店データはユーザーを集めるための餌</strong>で、売り物は集まった高校生への広告在庫です。個人店の広告予算は月1〜3万円でゼロの店も多く、何百軒から集めるには営業部隊が要って割に合わないため。</p>
+
+<div class="card">
+  <div class="kicker">調べて分かった相場</div>
+  <ul>
+    <li>塾ポータル「ジュクサガス」は<strong>入塾1人につき3〜5万円</strong>の完全成果報酬プランがある</li>
+    <li>紹介経由の体験申込は<strong>入塾率70〜80%</strong>、広告経由は50%前後</li>
+    <li>折込チラシの反応率は<strong>0.01〜0.05%</strong>（1万枚で1〜5件）</li>
+    <li>LINE広告の友だち追加は200〜400円、体験申込のCPAは5,000円前後の例</li>
+  </ul>
+  <p class="why"><b>意味するところ：</b>「第三者の媒体に成果報酬を払う」のは既に業界慣行で、<b>売るものに前例価格がある</b>。そして紹介の数字は、友達マッチング機能が構造的に「紹介」そのものであることの裏付けになります。</p>
+</div>
+
+<h3>「通知1本にすると広告が出せなくなるのでは」への答え</h3>
+<p>正しい指摘ですが、モデルを壊すのではなく<strong>より良い方へ強制します</strong>。</p>
+<ul>
+  <li>1000人×1日1通知＝月3万インプレッション。表示回数で売れば月数千円で話にならない</li>
+  <li>だが<strong>成果で売れば</strong>、そこから10人がオープンキャンパスに申し込むだけで数十万円になる</li>
+  <li><strong>通知は最高の広告枠</strong>。スクロールで飛ばされない。1日1通、全員が必ず見る枠は希少</li>
+  <li><strong>在庫の本体は「みんなで決める」</strong>。複数人が数分間同時に使い、同じ広告をその場で話題にする</li>
+</ul>
+
+<h2><span class="num">06</span>店の写真をどう集めるか</h2>
+
+<p>自分で全部撮るのはコストが高すぎて更新も続かない。かといってスクレイピングは著作権侵害、AI生成画像は虚偽表示。答えは段階を分けることです。</p>
+
+<ol class="flow">
+  <li><strong>当面は写真を使わない</strong> — デモは絵文字とテキストだけで成立している。「豚骨・こってり・¥700・替玉無料」で判断できるし、むしろ速い</li>
+  <li><strong>種の30〜50軒は「撮る」のではなく「もらう」</strong> — 店はSNS用の写真を既に持っている。無料掲載を条件にもらえば、その時点で許諾も取れる。LINE公式アカウントに送ってもらうだけでいい</li>
+  <li><strong>拡大後はユーザーが撮る</strong> — 更新問題が構造的に消える。閉店も値上げもユーザーが先に気づく</li>
+</ol>
+
+<div class="card">
+  <div class="kicker">ユーザーにどう撮らせるか</div>
+  <p><strong>「撮らせる」必要はありません。もう撮っています。</strong>高校生はストーリー用に飯の写真を既に撮っている。設計すべきは撮影の動機づけではなく、<em>撮った直後に1タップで渡せる導線</em>です。</p>
+  <p>行った日の夜に通知 →「今日◯◯行った? 写真ある?」→ カメラロールの直近を選んで送るだけ。<strong>「撮ってきて」ではなく「もう撮ったやつをちょうだい」</strong>。</p>
+  <p>報酬は<strong>その店で使えるクーポン</strong>。原資を店に持たせるので持ち出しゼロ、現金でないので資金決済法の議論にも入らず、次の来店に直結するので店にとっての価値も高い。<strong>採用された1枚だけ</strong>に出す。</p>
+  <p class="why"><b>ただし写真をソーシャルの燃料にはしません。</b>投稿者側のメリットがほとんどないからです（下記08参照）。写真は実利で細く集めるものと割り切ります。</p>
+</div>
+
+<h3>チェーン店と個人店</h3>
+<ul>
+  <li><strong>スワイプカードの代表写真は全店1枚</strong>。土俵を完全に平等にする</li>
+  <li><strong>詳細画面では個人店だけ複数枚</strong>持てる。タップして深掘りしたときだけ個人店が有利になる</li>
+  <li>チェーンは本部承認が要るのでクーポンが通らない。代わりに枚数を集めない</li>
+  <li><strong>撮影の規格は強制しない</strong>（どう撮ろうか迷う時間や楽しみが消えると、そもそも誰も撮らなくなる）。代わりに<strong>アップロード後に自動で正方形トリミング＋明るさ補正</strong>して、並んだときの見た目だけ揃える</li>
+  <li>「この店はまだ写真がありません／採用確率が高い」と見せて空白を埋めさせる。スワイプとは別の<strong>写真ミッション一覧</strong>に置き、<em>スワイプ＝飯を決める場所／ミッション＝稼ぐ場所</em>と役割を分ける</li>
+</ul>
+
+<h2><span class="num">07</span>おすすめの作り方</h2>
+
+<p><strong>最初はAIにしません。AIにすると必ず悪くなります。</strong>データが少ないうちは学習が効かず、店が30軒では当てる余地も小さく、何より<strong>なぜその店が出たか説明できなくなる</strong>から。決定の責任を引き受けるのが売りなのに、理由を言えないのは致命的です。</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>段階</th><th>やり方</th></tr></thead>
+  <tbody>
+    <tr><td>初期</td><td><strong>ルールベース</strong>。6軸（ガッツリ／甘い／映え／安さ／長居／シェア）のスコアを掛け算して並べる。計算は自動、理由も言える</td></tr>
+    <tr><td>写真が増えたら</td><td><strong>タグ付けだけAI</strong>。写真からジャンル・価格帯・ボリューム・映えを自動判定。ここは本当にAIが強い</td></tr>
+    <tr><td>数百人規模から</td><td><strong>協調フィルタリング</strong>（好みが似た人が行った店）。人が少ないうちは動かない</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>好みは1層ではなく3層ある</h3>
+<ul>
+  <li><strong>変わらない好み</strong>（ラーメンが好き、甘いものは食べない）— スワイプの累積で取れる</li>
+  <li><strong>今日の状態</strong>（金がない、時間がない、昨日ラーメン食べた）— <strong>スワイプでは永遠に取れない</strong></li>
+  <li><strong>誰と行くか</strong> — 一人の時とゆうとと行く時では選ぶ店が違う</li>
+</ul>
+
+<p>2層目の取り方：<strong>聞かずに行動から取る</strong>。一番強い信号は<strong>直近に何を食べたか</strong>（昨日ラーメンなら今日は出にくくする＝飽きを計算に入れる）。次に強いのが<strong>3枚をどう扱ったか</strong>で、3枚とも見送ったら「今日はズレている」合図なので<strong>その場で1回だけ引き直す</strong>。引き直しの時だけ「今日は? 安く／早く／がっつり」を聞けば、毎日聞く重さが出ません。</p>
+
+<h3>コールドスタートをどう抜けるか</h3>
+<p>好みデータがゼロでも<strong>初日から価値が出ます</strong>。「ゆうとも今日の放課後に外で食う」の成立に好みは1ミリも要らないからです。推薦が本体ではないので、このアプリはコールドスタート問題を構造的に回避できます。</p>
+<ul>
+  <li><strong>長いオンボーディングは作らない</strong>。3枚から始めて毎日3枚ずつ貯まれば、1週間で21枚。初回10分より多く、しかも離脱しない</li>
+  <li>登録時に<strong>「行ったことある店を3つ選んで」だけ</strong> — 10秒で終わり、知っている店なので迷わず、スワイプ20回分の情報が入る</li>
+  <li>招待経由の人には<strong>行動範囲</strong>（同じ学校・同じ駅＝行ける店の集合）を引き継ぐ。※<strong>好みは引き継がない</strong>。友達だから好みが似ているというのは成り立たないし、そもそも好みが違うからマッチング機能が要る</li>
+</ul>
+
+<h2><span class="num">08</span>検討して却下した案</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>案</th><th>判定</th><th>理由</th></tr></thead>
+  <tbody>
+    <tr><td>飲食店から広告料を取る</td><td class="verdict n">却下</td><td>高校生が行くのはチェーンが多く、チェーンは地域単位で広告を買わない。個人店の予算も小さすぎる</td></tr>
+    <tr><td>金を払った店を上位に出す</td><td class="verdict n">条件付き</td><td>露出頻度に金が効くのはOK。ただし<strong>好み適合を金で飛び越えさせない</strong>。それをやると好みデータが無価値になる</td></tr>
+    <tr><td>PayPayポイントで写真を買う</td><td class="verdict n">却下</td><td>資金決済法（前払式支払手段・為替取引）の議論に入り、個人が軽く始められない。原資が先に出ていく</td></tr>
+    <tr><td>撮影をアプリ内カメラで規格化</td><td class="verdict n">却下</td><td>どう撮ろうか迷う時間と楽しみが消えると、そもそも投稿されない。表示側の自動補正で代替</td></tr>
+    <tr><td>チェーン店には写真を載せない</td><td class="verdict n">却下</td><td>載せる。ただし代表1枚のみ</td></tr>
+    <tr><td>相互性ルール（出さないと友達の投稿が見られない）</td><td class="verdict n">撤回</td><td>成立条件は「見たいものがあること」。<strong>友達の飯写真は見たくない</strong>。BeRealが成立するのは対象が人だから</td></tr>
+    <tr><td>スワイプをオンボーディングに限定し、以降は1軒出るだけ</td><td class="verdict n">撤回</td><td>開いて1軒出て終わりでは<strong>開く理由がない</strong>。1軒だけ渡されると押し付けになる。「毎日3枚」に修正</td></tr>
+    <tr><td>世の中の飯を大量にスワイプさせて好みを取る</td><td class="verdict n">却下</td><td>岡崎で食べられない店の好みは30軒にマッピングできない。全国の写真の権利問題も発生。何よりDL直後の離脱要因</td></tr>
+    <tr><td>飯でマッチしたら相手の予定が見える</td><td class="verdict n">却下</td><td>見えると「こっちから誘う」が復活する</td></tr>
+    <tr><td>飯しか流れてこないInstagram</td><td class="verdict n">保留</td><td>発見に戻る案で、決定を売る方向と逆。近所の飯動画が流れるだけならInstagramで足りる</td></tr>
+    <tr><td>動画（リール型）の左右スワイプ</td><td class="verdict y">将来</td><td>体験は面白いが動画のコストは写真の10倍。写真で始めて密度ができてから</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2><span class="num">09</span>外部からの批判と、それへの答え</h2>
+
+<p>初めて第三者（小倉さん）に説明した結果は、かなり批判的でした。</p>
+
+<div class="card">
+  <p class="quote">「ただのマッチングアプリやん」「ご飯を口実にマッチングするってことだら」<br>「誰が使うだ笑」「そこまで便利じゃないし」<br>「別にスクショしてラインで送ってこいこって」<br>「遊んでる時とかの話しちゃう」<br>「その好みがどんくらい絞られてるかによるだろ」</p>
+</div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>批判</th><th>答え</th></tr></thead>
+  <tbody>
+    <tr><td><strong>LINEでスクショ送れば足りる</strong></td><td>決定的な差は<strong>誘う側のコスト</strong>。LINEのスクショは断られるリスクを送り手が全部背負う。アプリの通知は<strong>両方が既に宣言している時にしか出ない</strong>＝断られない誘いしか発生しない。既存手段では再現不可能</td></tr>
+    <tr><td><strong>遊んでる時に話しちゃう</strong></td><td>高校生は電車通学で放課後バラバラに解散するので、一緒にいる時間がそもそも短い。加えて「みんなで決める」モードで<strong>一緒にいる場面を最大の利用シーンに反転</strong>させる</td></tr>
+    <tr><td><strong>好みがどれだけ絞れるかによる</strong></td><td>正しい。だから<strong>絞らなくていい形にする</strong>。「知らない店を教える」から「今日の1軒を決める」へ。全部知っていても今日どれかは決まっていないので、在庫がなくても価値が出る</td></tr>
+    <tr><td>ただのマッチングアプリやん</td><td>人と人ではなく人と店。ただし<strong>初見でそう誤解された事実は重い</strong>。説明順を固定する（①店を選ぶアプリ ②好みが出る ③今日の1軒が決まる ④おまけで友達と一致したら教える）。名前に「マッチング」を使わない</td></tr>
+    <tr><td>店側が金払ってまでやるものにならない</td><td>店から取らないので前提が違う。営業時に先に言えばこの批判は出ない</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="why">
+  <b>反省点：</b>「どうやっておすすめ出すねん」に「ai」としか答えられず「頭使え」と返された。具体的な答え（6軸に分解して未スワイプの店に当てる）とデモを既に持っているのに出せていなかった。<b>次は最初にデモを触らせる。</b>
+</div>
+
+<h2><span class="num">10</span>まだ解けていないこと</h2>
+
+<ul>
+  <li><strong>毎日押してもらえるか</strong>。この設計は「今日、外で食う？」に毎日答えてもらえないと死ぬ。ただしBeRealが失速したのは義務化が重かったからなので、<strong>押さない日にペナルティを作らない</strong>（押さなければただ静か）</li>
+  <li><strong>そもそも高校生は週に何回外食するのか</strong>。「今日どこ行く」の発生回数が週1未満なら、どれだけ作り込んでも開かれない</li>
+  <li><strong>実績ゼロの新媒体に広告費を出してもらえるか</strong>。相場は分かったが、出稿の意思そのものは未検証</li>
+  <li><strong>3枚が少なすぎないか</strong>。引き直しを入れた状態で触ってみないと判断できない</li>
+  <li><strong>今年やるか、来年やるか</strong>。大学生に上げれば未成年の制約が全部消えて広告主も厚くなるが、岡崎に大学がないので実行できない。今年なら高校生・岡崎、来年なら大学生・進学先</li>
+</ul>
+
+<h2><span class="num">11</span>次にやること</h2>
+
+<p><strong>原則：先に広告主を押さえてから、ユーザーを集める。逆にすると死ぬ。</strong></p>
+
+<ol class="flow">
+  <li><strong>Phase 1 — 塾3件＋高校2校に聞く（0円）</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">「中学生・高校生に直接届く媒体があったら出稿するか。今どこに広告費を使っているか。<b>生徒1人を獲得するのに実際いくら払っているか</b>」。作る前に聞く。デモをそのまま見せる。塾は教室長がその場で答えられるので先に回る</span></li>
+  <li><strong>Phase 0 — 高校生15人に聞く（0円）</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">週何回・誰と・どこで・いくら／放課後どこで解散するか／「どこ行く」を決めるのに何分かかるか／誘うのをためらった経験があるか。ここでターゲットを確定させ、以降は動かさない</span></li>
+  <li><strong>Phase 2 — アプリを作らずに検証（2週間・0円）</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">LINEグループで10人に週1回「今週の3軒」を投げ、手で集計し、一致したら手で通知する。<b>「LINEで直接誘った回数」と「通知経由で実際に行った回数」を分けて数える</b>。前者が多ければこの機能は負け</span></li>
+  <li><strong>Phase 3 — 条件付き内諾を取ってから作る</strong><br>
+    <span style="color:var(--text-2);font-size:13.5px">「◯人集まったら出稿する」を1件でも取る。取れてから開発。法務確認はこの直前</span></li>
+</ol>
+
+<div class="card accent">
+  <div class="kicker">撤退ライン（着手前に確定させる）</div>
+  <ul>
+    <li>高校生の外食が<strong>週1回未満</strong> → 「今日の1軒」に価値が出ないので設計から見直す</li>
+    <li>塾3件＋高校2校の<strong>5件中1件も「予算がある」と言わない</strong> → 媒体そのものを見直す</li>
+    <li>手動運用2週間で「実際に友達と行った」が<strong>2件出ない</strong> → 友達機能の設計を変える</li>
+  </ul>
+  <p class="why">やってから考えると、人は必ず「いける」と判断します。撤退ラインは着手前にしか書けません。</p>
+</div>
+
+<h2><span class="num">12</span>参考：whooはどう広まったか</h2>
+
+<p>Zenly終了という空白を突いた位置共有アプリ。3ヶ月で1000万DL、ユーザーの8割が中高生。</p>
+<ul>
+  <li><strong>ゼロから始めていない</strong> — 前作の匿名質問アプリ「Ninjar」で約300万ユーザーを保有し、そこから毎日100件のDMで「次を作って」と要望が来ていた</li>
+  <li><strong>約1.5ヶ月で作って</strong>公開。Zenly終了の1ヶ月半前に出して待っていた</li>
+  <li>公開3日前にテストユーザーへ予告 → 公開直後に一斉招待 → <strong>30分後からアクティブが倍々</strong></li>
+  <li>最大の拡散経路は<strong>Instagramのストーリー</strong>（中高生が最も見る場所）。海外はTikTok</li>
+  <li>使う理由の1位は<strong>「友達が使っているから」45.9%</strong></li>
+  <li>プライバシー懸念を解消する戦略は語られていない。<strong>懸念は説得で消えたのではなく「みんな使ってる」に上回られただけ</strong></li>
+</ul>
+
+<div class="why">
+  <b>ここから借りるもの：</b>懸念を言葉で潰そうとせず、<b>局所的に「みんな使ってる」状態を作る</b>（1校1学年に学年LINEで一斉配布＝面で入れる）。<b>ストーリーを設計の前提にする</b>——「今日の1軒」の結果をストーリーに貼れる縦長画像で出せば、招待リンクが自然に回る。whooの300万人の代わりになるのは<b>手が届く自分の学校の300人</b>。
+</div>
+
+<footer>
+  放課後スワイプ / 岡崎 / 2026-08-17 時点の決定事項。<br>
+  デモに出てくる店名・学校名・数値はすべて架空で、実在の店舗や学校とは関係ありません。
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="高校生向け・放課後の飯を決めるアプリのコンセプトデモ">
+<title>放課後スワイプ</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; }
+  h1, h2, h3, p, ul, ol { margin: 0; }
+  button { font: inherit; color: inherit; }
+</style>
+</head>
+<body>
+<style>
+  /* ---------- tokens : light (base) ---------- */
+  :root {
+    --ground:      #EDEEF2;
+    --surface:     #FFFFFF;
+    --surface-2:   #F4F5F8;
+    --line:        #D6D8E0;
+    --line-soft:   #E4E6EC;
+    --text:        #1B1D2A;
+    --text-2:      #5A5E72;
+    --text-3:      #888CA0;
+    --amber:       #C96A12;
+    --amber-soft:  #F5E3CE;
+    --like:        #1F8A5B;
+    --nope:        #C63B36;
+    --pr:          #2F5F9B;
+    --pr-soft:     #DDE7F3;
+    --shadow:      0 1px 2px rgba(27,29,42,.08), 0 8px 24px rgba(27,29,42,.10);
+    --shadow-lift: 0 2px 4px rgba(27,29,42,.10), 0 18px 40px rgba(27,29,42,.18);
+
+    --font-ui: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic",
+               "Noto Sans JP", "Meiryo", system-ui, sans-serif;
+    --font-num: ui-monospace, "SFMono-Regular", "Consolas", "Roboto Mono", monospace;
+  }
+
+  /* ---------- tokens : dark (system default, unless light is pinned) ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:     #14161F;
+      --surface:    #1E212D;
+      --surface-2:  #262A38;
+      --line:       #363B4C;
+      --line-soft:  #2C3040;
+      --text:       #ECEDF2;
+      --text-2:     #A6AABC;
+      --text-3:     #767B8F;
+      --amber:      #EFA24A;
+      --amber-soft: #3A2C18;
+      --like:       #45C48A;
+      --nope:       #E4645E;
+      --pr:         #7FAEE4;
+      --pr-soft:    #1E2A3A;
+      --shadow:      0 1px 2px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.45);
+      --shadow-lift: 0 2px 4px rgba(0,0,0,.5), 0 18px 40px rgba(0,0,0,.6);
+    }
+  }
+  /* ---------- tokens : dark (explicitly pinned) ---------- */
+  :root[data-theme="dark"] {
+    --ground:     #14161F;
+    --surface:    #1E212D;
+    --surface-2:  #262A38;
+    --line:       #363B4C;
+    --line-soft:  #2C3040;
+    --text:       #ECEDF2;
+    --text-2:     #A6AABC;
+    --text-3:     #767B8F;
+    --amber:      #EFA24A;
+    --amber-soft: #3A2C18;
+    --like:       #45C48A;
+    --nope:       #E4645E;
+    --pr:         #7FAEE4;
+    --pr-soft:    #1E2A3A;
+    --shadow:      0 1px 2px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.45);
+    --shadow-lift: 0 2px 4px rgba(0,0,0,.5), 0 18px 40px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  .wrap {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 100vh;
+  }
+
+  /* ---------- header ---------- */
+  .top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; flex-direction: column; gap: 2px; }
+  .brand h1 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: .04em; }
+  .brand .sub {
+    font-family: var(--font-num);
+    font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--text-3);
+  }
+  .counter {
+    font-family: var(--font-num); font-size: 12px; color: var(--text-2);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* ---------- mode picker ---------- */
+  .modes { display: flex; flex-direction: column; gap: 12px; }
+  .mode-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; text-align: left;
+    padding: 18px 16px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-ui);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border-color .14s ease, transform .14s ease;
+  }
+  .mode-btn:hover { border-color: var(--amber); transform: translateY(-2px); }
+  .mode-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  .mode-btn .ico { font-size: 30px; flex: none; }
+  .mode-btn b { display: block; font-size: 16px; font-weight: 700; }
+  .mode-btn small { color: var(--text-3); font-size: 12px; line-height: 1.5; display: block; }
+  .modes .lead { margin: 0; font-size: 13px; color: var(--text-2); }
+
+  .mode-btn.primary { border-color: var(--amber); border-width: 2px; }
+
+  /* ---------- daily : 今日、外で食う？ ---------- */
+  .daily { display: none; flex-direction: column; gap: 14px; }
+  .daily.show { display: flex; }
+
+  .notif {
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-lift);
+  }
+  .notif-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-num); font-size: 10.5px;
+    color: var(--text-3); letter-spacing: .1em;
+    margin-bottom: 6px;
+  }
+  .notif-head .app { color: var(--amber); font-weight: 700; }
+  .notif-body { font-size: 17px; font-weight: 700; }
+
+  .tiny { margin: 0; font-size: 11.5px; color: var(--text-3); text-align: center; }
+
+  .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .slot {
+    padding: 16px 6px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text-2);
+    font-family: var(--font-ui);
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transition: border-color .14s ease, background .14s ease, color .14s ease;
+  }
+  .slot b { font-size: 15px; font-weight: 700; }
+  .slot small { font-family: var(--font-num); font-size: 10px; letter-spacing: .04em; }
+  .slot[aria-pressed="true"] {
+    border-color: var(--amber);
+    background: var(--amber-soft);
+    color: var(--text);
+  }
+  .slot:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .primary-btn {
+    width: 100%; padding: 14px; border-radius: 13px;
+    border: 1px solid var(--amber); background: var(--amber); color: #fff;
+    font-family: var(--font-ui); font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .primary-btn:hover { filter: brightness(1.06); }
+  .primary-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+  .matchbox {
+    background: var(--surface); border: 2px solid var(--amber);
+    border-radius: 16px; padding: 16px; box-shadow: var(--shadow);
+  }
+  .matchbox .cap {
+    font-family: var(--font-num); font-size: 10.5px; letter-spacing: .18em;
+    color: var(--amber); margin-bottom: 10px;
+  }
+  .matchbox .line { font-size: 16px; font-weight: 700; line-height: 1.55; }
+  .matchbox .sub { margin-top: 8px; font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+  .matchbox.quiet { border-color: var(--line); }
+  .matchbox.quiet .cap { color: var(--text-3); }
+  .matchbox.quiet .line { font-weight: 600; color: var(--text-2); font-size: 14px; }
+
+  .who-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .who-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 11px; border-radius: 999px;
+    background: var(--amber-soft); font-size: 13px; font-weight: 700;
+  }
+
+  /* ---------- room bar (group mode) ---------- */
+  .roombar {
+    display: none;
+    align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber);
+  }
+  .roombar.show { display: flex; }
+  .roombar .code {
+    font-family: var(--font-num); font-size: 19px; font-weight: 700;
+    letter-spacing: .3em; color: var(--amber);
+    font-variant-numeric: tabular-nums;
+  }
+  .roombar .lbl {
+    font-family: var(--font-num); font-size: 9.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--text-2); display: block;
+  }
+  .members { display: flex; gap: 6px; }
+  .members span {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--line);
+    font-size: 12px; font-weight: 700; color: var(--text-2);
+  }
+
+  /* ---------- card stack ---------- */
+  .stage { position: relative; height: 440px; }
+
+  .card {
+    position: absolute; inset: 0;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transform-origin: 50% 120%;
+    will-change: transform;
+  }
+  .card.top { box-shadow: var(--shadow-lift); cursor: grab; touch-action: none; }
+  .card.top.dragging { cursor: grabbing; }
+  .card.anim { transition: transform .34s cubic-bezier(.22,.7,.3,1), opacity .34s ease; }
+
+  .art {
+    flex: 1; display: grid; place-items: center;
+    font-size: 88px; line-height: 1; user-select: none;
+  }
+  .meta { padding: 14px 16px 16px; border-top: 1px solid var(--line-soft); background: var(--surface); }
+  .meta h2 { margin: 0 0 2px; font-size: 18px; font-weight: 700; letter-spacing: .01em; }
+  .meta .where {
+    font-family: var(--font-num); font-size: 11px; color: var(--text-3);
+    letter-spacing: .06em; font-variant-numeric: tabular-nums;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag {
+    font-size: 11.5px; padding: 3px 9px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--line-soft); color: var(--text-2);
+  }
+  .tag.price { color: var(--amber); border-color: var(--amber); background: transparent; font-family: var(--font-num); }
+
+  .card.ad { border-color: var(--pr); }
+  .card.ad .art { background: var(--pr-soft); font-size: 72px; }
+  .card.ad .meta { border-top-color: var(--pr); }
+  .prbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 14px; background: var(--pr); color: #fff;
+    font-family: var(--font-num); font-size: 10.5px; letter-spacing: .14em;
+  }
+  .prbar .fake { letter-spacing: .02em; opacity: .85; font-family: var(--font-ui); }
+  .adcta {
+    margin-top: 12px; display: block; text-align: center;
+    padding: 9px; border-radius: 10px;
+    background: var(--pr); color: #fff; font-size: 13.5px; font-weight: 700;
+  }
+
+  .stamp {
+    position: absolute; top: 22px;
+    font-family: var(--font-num); font-size: 24px; font-weight: 700; letter-spacing: .1em;
+    padding: 5px 12px; border: 3px solid currentColor; border-radius: 8px;
+    opacity: 0; pointer-events: none;
+  }
+  .stamp.yes { left: 20px; color: var(--like); transform: rotate(-13deg); }
+  .stamp.no  { right: 20px; color: var(--nope); transform: rotate(13deg); }
+
+  .empty {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--text-3); font-size: 13px;
+  }
+
+  /* ---------- controls ---------- */
+  .controls { display: flex; justify-content: center; gap: 18px; }
+  .btn {
+    width: 62px; height: 62px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text-2);
+    font-size: 24px; display: grid; place-items: center; cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.94); }
+  .btn.no:hover  { color: var(--nope); border-color: var(--nope); }
+  .btn.yes:hover { color: var(--like); border-color: var(--like); }
+  .btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  .btn[disabled] { opacity: .4; cursor: default; transform: none; }
+
+  .hint { text-align: center; font-size: 11.5px; color: var(--text-3); }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 26px;
+    transform: translate(-50%, 18px);
+    max-width: 330px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 15px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--amber);
+    box-shadow: var(--shadow-lift); font-size: 13px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 40;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast .dot {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--amber-soft); display: grid; place-items: center;
+    font-size: 14px; flex: none;
+  }
+
+  /* ---------- results ---------- */
+  .result { display: none; flex-direction: column; gap: 14px; }
+  .result.show { display: flex; }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: 14px; padding: 16px; box-shadow: var(--shadow);
+  }
+  .panel > h3 {
+    margin: 0 0 12px;
+    font-family: var(--font-num); font-size: 10.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--text-3); font-weight: 600;
+  }
+
+  /* 今日の1軒 */
+  .hero { border: 2px solid var(--amber); padding: 0; overflow: hidden; }
+  .hero .cap {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 9px 14px; background: var(--amber); color: #fff;
+    font-family: var(--font-num); font-size: 10.5px; letter-spacing: .18em;
+  }
+  .hero .cap .vote { letter-spacing: .02em; font-family: var(--font-ui); font-weight: 700; }
+  .hero .big {
+    display: grid; place-items: center;
+    padding: 26px 0 18px; font-size: 76px; line-height: 1;
+    background: linear-gradient(160deg, var(--surface-2), var(--amber-soft));
+  }
+  .hero .body { padding: 14px 16px 16px; }
+  .hero h2 { margin: 0 0 3px; font-size: 23px; font-weight: 800; letter-spacing: .01em; text-wrap: balance; }
+  .hero .where {
+    font-family: var(--font-num); font-size: 11.5px; color: var(--text-3);
+    letter-spacing: .06em; font-variant-numeric: tabular-nums;
+  }
+  .hero .why {
+    margin: 12px 0 0; padding: 10px 12px;
+    background: var(--surface-2); border-radius: 10px;
+    font-size: 12.5px; color: var(--text-2); line-height: 1.65;
+  }
+  .hero .why b { color: var(--text); }
+  .promise {
+    margin: 10px 0 0; font-size: 11px; color: var(--text-3); text-align: center;
+  }
+
+  .alt { display: flex; flex-direction: column; gap: 8px; }
+  .alt .item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 10px; border: 1px solid var(--line-soft);
+    border-radius: 11px; background: var(--surface-2);
+  }
+  .alt .em { font-size: 25px; flex: none; }
+  .alt .txt { flex: 1; min-width: 0; }
+  .alt .txt b { display: block; font-size: 14px; font-weight: 700; }
+  .alt .txt small { color: var(--text-3); font-size: 11px; }
+  .alt .score { font-family: var(--font-num); font-size: 12px; color: var(--amber); font-variant-numeric: tabular-nums; }
+
+  .axis { display: flex; flex-direction: column; gap: 9px; }
+  .row { display: grid; grid-template-columns: 76px 1fr 38px; align-items: center; gap: 10px; }
+  .row .name { font-size: 13px; }
+  .row .bar { height: 7px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .row .bar span { display: block; height: 100%; background: var(--amber); border-radius: 4px; width: 0; transition: width .7s cubic-bezier(.2,.8,.3,1); }
+  .row .pct { font-family: var(--font-num); font-size: 11.5px; color: var(--text-2); text-align: right; font-variant-numeric: tabular-nums; }
+
+  .friends { display: flex; flex-direction: column; gap: 8px; }
+  .fr {
+    display: flex; align-items: center; gap: 10px; font-size: 13px;
+    padding: 8px 10px; border-radius: 10px;
+    background: var(--amber-soft); color: var(--text);
+  }
+  .fr .who { font-weight: 700; }
+
+  .panel.biz { border-color: var(--pr); }
+  .panel.biz > h3 { color: var(--pr); }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .kpi { text-align: center; padding: 10px 4px; border-radius: 10px; background: var(--pr-soft); }
+  .kpi b { display: block; font-family: var(--font-num); font-size: 19px; font-variant-numeric: tabular-nums; color: var(--pr); }
+  .kpi small { font-size: 10.5px; color: var(--text-2); }
+  .note { margin: 12px 0 0; font-size: 11.5px; color: var(--text-3); line-height: 1.65; }
+
+  .again {
+    width: 100%; padding: 13px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    font-family: var(--font-ui); font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .again:hover { border-color: var(--amber); color: var(--amber); }
+  .again:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .foot { font-size: 11px; color: var(--text-3); text-align: center; line-height: 1.7; }
+
+  /* ---------- detail sheet (tap to open) ---------- */
+  .sheet {
+    position: fixed; inset: 0;
+    background: rgba(10, 11, 16, .55);
+    display: none; align-items: flex-end; justify-content: center;
+    z-index: 60;
+  }
+  .sheet.show { display: flex; }
+  .sheet-inner {
+    width: 100%; max-width: 430px;
+    max-height: 88vh; overflow-y: auto;
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    border: 1px solid var(--line-soft);
+    border-bottom: none;
+    padding: 14px 16px 24px;
+    animation: rise .22s cubic-bezier(.22,.7,.3,1);
+  }
+  @keyframes rise { from { transform: translateY(26px); opacity: .4; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .sheet-inner { animation: none; } }
+
+  .grip { width: 38px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto 14px; }
+
+  .photos { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .photo {
+    flex: none; width: 116px; height: 116px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 48px;
+    background: linear-gradient(160deg, var(--surface-2), var(--amber-soft));
+    border: 1px solid var(--line-soft);
+  }
+  .photo.more {
+    background: var(--surface-2); font-size: 12px; color: var(--text-3);
+    text-align: center; line-height: 1.5; padding: 0 8px;
+  }
+
+  .sheet h2 { margin: 14px 0 3px; font-size: 20px; font-weight: 800; }
+  .sheet .where {
+    font-family: var(--font-num); font-size: 11.5px; color: var(--text-3);
+    letter-spacing: .06em; font-variant-numeric: tabular-nums;
+  }
+  .badge {
+    display: inline-block; margin-left: 8px;
+    font-size: 10.5px; padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--text-3);
+    font-family: var(--font-num); letter-spacing: .08em;
+    vertical-align: 2px;
+  }
+  .menu { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .menu li {
+    display: flex; justify-content: space-between; gap: 10px;
+    font-size: 13px; padding: 8px 10px;
+    background: var(--surface-2); border-radius: 9px;
+  }
+  .srcnote {
+    margin: 14px 0 0; font-size: 11.5px; color: var(--text-3); line-height: 1.65;
+    padding: 10px 12px; border: 1px dashed var(--line); border-radius: 10px;
+  }
+  .sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .sheet-actions button {
+    flex: 1; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    font-family: var(--font-ui); font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .sheet-actions .ok { border-color: var(--like); color: var(--like); }
+  .sheet-actions .ng { border-color: var(--nope); color: var(--nope); }
+  .sheet-actions button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .hidden { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card.anim, .row .bar span, .toast, .btn, .mode-btn { transition: none; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <h1>放課後スワイプ</h1>
+      <div class="sub">Okazaki / demo</div>
+    </div>
+    <div class="counter" id="counter"></div>
+  </div>
+
+  <!-- ===== mode picker ===== -->
+  <div class="modes" id="modeScreen">
+    <p class="lead">誰かと飯に行くまでの、言い出す役を引き受けます。</p>
+    <button class="mode-btn primary" id="modeDaily">
+      <span class="ico">🔔</span>
+      <span>
+        <b>今日、外で食う？</b>
+        <small>毎日のやつ。2タップで、合う友達と店まで決まります</small>
+      </span>
+    </button>
+    <button class="mode-btn" id="modeSolo">
+      <span class="ico">🍜</span>
+      <span>
+        <b>はじめて（好みを登録）</b>
+        <small>最初の1回だけ。まとめてスワイプして好みを取ります</small>
+      </span>
+    </button>
+    <button class="mode-btn" id="modeGroup">
+      <span class="ico">👥</span>
+      <span>
+        <b>みんなで決める</b>
+        <small>その場の3人で同時にスワイプ。多数決で必ず1軒に決まります</small>
+      </span>
+    </button>
+  </div>
+
+  <!-- ===== daily : 今日、外で食う？ ===== -->
+  <div class="daily" id="dailyScreen">
+    <div class="notif">
+      <div class="notif-head">
+        <span class="app">放課後スワイプ</span>
+        <span class="time">7:30</span>
+      </div>
+      <div class="notif-body">今日、外で食う？</div>
+    </div>
+
+    <p class="tiny">押した枠だけが友達に伝わります。押さなければ何も起きません。</p>
+
+    <div class="slots">
+      <button class="slot" data-slot="昼"   id="slotLunch"><b>昼</b><small>12–15時</small></button>
+      <button class="slot" data-slot="放課後" id="slotAfter"><b>放課後</b><small>15–18時</small></button>
+      <button class="slot" data-slot="夜"   id="slotNight"><b>夜</b><small>18–22時</small></button>
+    </div>
+
+    <button class="primary-btn" id="slotSubmit">決定</button>
+  </div>
+
+  <!-- ===== daily : マッチ結果 ===== -->
+  <div class="daily" id="matchScreen">
+    <div id="matchBody"></div>
+    <button class="primary-btn" id="toSwipe">今日の3枚を見る</button>
+  </div>
+
+  <!-- ===== room bar ===== -->
+  <div class="roombar" id="roomBar">
+    <div>
+      <span class="lbl">room code</span>
+      <span class="code" id="roomCode">0000</span>
+    </div>
+    <div class="members">
+      <span>自分</span><span>ゆ</span><span>み</span>
+    </div>
+  </div>
+
+  <div class="stage hidden" id="stage">
+    <div class="empty" id="empty">カードは以上です</div>
+  </div>
+
+  <div class="controls hidden" id="controls">
+    <button class="btn no"  id="btnNo"  aria-label="興味なし">✕</button>
+    <button class="btn yes" id="btnYes" aria-label="いいね">♥</button>
+  </div>
+
+  <p class="hint hidden" id="hint">ドラッグ / ボタン / ← → キーで判定</p>
+
+  <!-- ===== results ===== -->
+  <div class="result" id="result">
+
+    <div class="panel hero" id="hero"></div>
+
+    <div class="panel">
+      <h3 id="altTitle">ほかの候補</h3>
+      <div class="alt" id="alt"></div>
+    </div>
+
+    <div class="panel">
+      <h3>抽出された好み</h3>
+      <div class="axis" id="axis"></div>
+    </div>
+
+    <div class="panel" id="friendPanel">
+      <h3>友達とのマッチ（直近10日）</h3>
+      <div class="friends" id="friends"></div>
+    </div>
+
+    <div class="panel biz">
+      <h3>広告主向けレポート</h3>
+      <div class="kpis">
+        <div class="kpi"><b id="kImp">0</b><small>広告表示</small></div>
+        <div class="kpi"><b id="kTap">0</b><small>興味あり</small></div>
+        <div class="kpi"><b id="kCtr">0%</b><small>反応率</small></div>
+      </div>
+      <p class="note">
+        この画面が塾・専門学校に売る商品です。何人に届いて何人が反応したかが出る。
+        並び順は好みで決まり、広告費は表示されやすさにだけ効きます。
+      </p>
+    </div>
+
+    <button class="again" id="again">最初に戻る</button>
+  </div>
+
+  <p class="foot">
+    デモ用のダミーです。店名・学校名・数値はすべて架空で、実在の店舗や学校とは関係ありません。
+  </p>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner" id="sheetInner"></div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="dot">🙌</div>
+  <div id="toastText"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // 好みの6軸 g=ガッツリ a=甘い b=映え y=安い n=長居 s=シェア
+  var AXES = [
+    { k: "g", label: "ガッツリ" },
+    { k: "a", label: "甘いもの" },
+    { k: "b", label: "写真映え" },
+    { k: "y", label: "安さ重視" },
+    { k: "n", label: "長居したい" },
+    { k: "s", label: "シェアする" }
+  ];
+
+  // chain:true = チェーン店（代表1枚のみ）／個人店は詳細に複数枚
+  var SHOPS = [
+    { em:"🍜", name:"豚骨まる勝",      where:"東岡崎 徒歩4分", price:700, tags:["こってり","替玉無料"], v:{g:2,y:2,s:0,a:0,b:0,n:0},
+      photos:["🍜","🥢","🏮","🍥"], menu:["味玉ラーメン ¥800","替玉 無料","ミニチャーシュー丼 ¥300"] },
+    { em:"🍰", name:"クレープ日和",    where:"康生通 徒歩2分", price:520, tags:["甘い","映える"],       v:{a:2,b:2,y:1,g:0,n:0,s:1},
+      photos:["🍰","🍓","🥞"], menu:["いちごクリーム ¥520","チョコバナナ ¥480","塩キャラメル ¥560"] },
+    { em:"🍛", name:"カレー食堂ひなた", where:"岡崎公園前 5分", price:800, tags:["大盛無料","おかわり"], v:{g:2,y:1,n:1,a:0,b:0,s:0},
+      photos:["🍛","🥄","🍳"], menu:["名物カツカレー ¥800","大盛 無料","半熟卵 ¥100"] },
+    { em:"🧋", name:"タピオカ SUZU",    where:"東岡崎 徒歩1分", price:480, tags:["映える","持ち帰り"],   v:{b:2,a:2,y:1,g:0,n:0,s:0},
+      chain:true, photos:["🧋"], menu:["黒糖ミルク ¥480","いちごラテ ¥520"] },
+    { em:"🍢", name:"おでん処 みかわ",  where:"六名 徒歩7分",   price:600, tags:["シェア","あったかい"], v:{s:2,y:1,n:1,g:1,a:0,b:0},
+      photos:["🍢","🍲","🏮"], menu:["おでん5種盛 ¥600","大根 ¥120","もち巾着 ¥150"] },
+    { em:"🍔", name:"バーガーコーナー", where:"明大寺 徒歩3分", price:890, tags:["ボリューム","映える"], v:{g:2,b:1,s:1,y:0,a:0,n:0},
+      chain:true, photos:["🍔"], menu:["ダブルチーズ ¥890","ポテトL ¥320"] },
+    { em:"☕", name:"喫茶ノート",       where:"康生通 徒歩6分", price:450, tags:["静か","勉強できる"],   v:{n:2,y:1,a:1,g:0,b:0,s:0},
+      photos:["☕","🍰","📖"], menu:["ブレンド ¥450","トースト ¥380","電源席あり"] },
+    { em:"🍕", name:"ピザ 1/8",         where:"岡崎駅 徒歩2分", price:350, tags:["シェア","立ち食い"],   v:{s:2,y:2,g:1,a:0,b:1,n:0},
+      photos:["🍕","🧀"], menu:["マルゲリータ 1枚 ¥350","4種チーズ ¥420"] },
+    { em:"🍧", name:"かき氷 こおりや",  where:"矢作橋 徒歩5分", price:680, tags:["甘い","映える"],       v:{a:2,b:2,n:1,g:0,y:0,s:1},
+      photos:["🍧","🍨","🍓"], menu:["いちごミルク ¥680","抹茶白玉 ¥720"] }
+  ];
+
+  // デッキに出さず、レコメンド側にだけ残す店
+  var HIDDEN = [
+    { em:"🍚", name:"からあげ丼 とりまる", where:"東岡崎 徒歩3分", price:650, tags:["ガッツリ","安い"], v:{g:2,y:2,s:0,a:0,b:0,n:0}, photos:["🍚","🍗"] },
+    { em:"🥞", name:"パンケーキ moku",     where:"康生通 徒歩4分", price:900, tags:["甘い","映える"],   v:{a:2,b:2,n:1,g:0,y:0,s:0}, photos:["🥞","🍯"] },
+    { em:"🍲", name:"もつ鍋 やぐら",       where:"六名 徒歩9分",   price:780, tags:["シェア","長居"],   v:{s:2,n:2,g:1,y:0,a:0,b:0}, photos:["🍲"] },
+    { em:"🍩", name:"ドーナツ stand",      where:"岡崎駅 徒歩1分", price:260, tags:["安い","持ち帰り"], v:{a:1,y:2,b:1,g:0,n:0,s:0}, chain:true, photos:["🍩"] },
+    { em:"🍝", name:"パスタ食堂 ひる",     where:"明大寺 徒歩6分", price:820, tags:["長居","おかわり"], v:{n:2,g:1,y:1,a:0,b:0,s:0}, photos:["🍝","🥗"] }
+  ];
+
+  var ADS = [
+    { em:"🎓", name:"三河国際大学", where:"オープンキャンパス 8/24(日)",
+      body:["学部説明・体験授業","在校生と話せる","名古屋から無料送迎バス"], cta:"参加を申し込む" },
+    { em:"📐", name:"桜台デザイン専門学校", where:"体験入学 9/7(土)",
+      body:["作品づくり体験","総合型選抜の説明","在校生と話せる"], cta:"日程を見る" }
+  ];
+
+  // グループモードの同席者（好みベクトル）
+  var FRIENDS = [
+    { name:"ゆうと", v:{ g:2, y:2, s:1, a:0, b:0, n:0 } },
+    { name:"みなみ", v:{ a:2, b:2, n:1, g:0, y:0, s:0 } }
+  ];
+  var VOTE_THRESHOLD = 4;
+
+  function dot(a, b) {
+    var s = 0;
+    for (var i = 0; i < AXES.length; i++) {
+      var k = AXES[i].k;
+      s += (a[k] || 0) * (b[k] || 0);
+    }
+    return s;
+  }
+  function friendLikes(friend, shop) { return dot(friend.v, shop.v) >= VOTE_THRESHOLD; }
+
+  // 非同期フレンド機能（ひとりモード用のデモデータ）
+  var FRIEND_HITS = {
+    "豚骨まる勝":    "ゆうと",
+    "クレープ日和":  "みなみ",
+    "タピオカ SUZU": "みなみ",
+    "ピザ 1/8":      "そうた",
+    "喫茶ノート":    "ゆうと"
+  };
+
+  function buildDeck() {
+    var shops = SHOPS.slice();
+    for (var i = shops.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = shops[i]; shops[i] = shops[j]; shops[j] = t;
+    }
+    var deck = [], adIndex = 0;
+    for (var k = 0; k < shops.length; k++) {
+      deck.push({ type: "shop", data: shops[k] });
+      if ((k + 1) % 4 === 0 && adIndex < ADS.length) deck.push({ type: "ad", data: ADS[adIndex++] });
+    }
+    while (adIndex < ADS.length) deck.push({ type: "ad", data: ADS[adIndex++] });
+    return deck;
+  }
+
+  var stage    = document.getElementById("stage");
+  var counter  = document.getElementById("counter");
+  var emptyMsg = document.getElementById("empty");
+  var result   = document.getElementById("result");
+  var toast    = document.getElementById("toast");
+  var toastTxt = document.getElementById("toastText");
+  var btnYes   = document.getElementById("btnYes");
+  var btnNo    = document.getElementById("btnNo");
+  var controls = document.getElementById("controls");
+  var hint     = document.getElementById("hint");
+  var modeScreen = document.getElementById("modeScreen");
+  var roomBar  = document.getElementById("roomBar");
+  var friendPanel = document.getElementById("friendPanel");
+
+  var mode, deck, cursor, liked, adSeen, adTapped, matchedFriends, busy;
+
+  // 友達の「今日、外で食う」表明（デモ用の固定データ）
+  var SOUTA = { name: "そうた", v: { s:2, y:1, n:1, g:0, a:0, b:0 } };
+  var DECLARED = [
+    { f: FRIENDS[0], slots: ["放課後"] },
+    { f: FRIENDS[1], slots: ["夜"] },
+    { f: SOUTA,      slots: ["放課後", "夜"] }
+  ];
+
+  var dailyScreen = document.getElementById("dailyScreen");
+  var matchScreen = document.getElementById("matchScreen");
+  var slotBtns = Array.prototype.slice.call(document.querySelectorAll(".slot"));
+  var pickedSlot = null;
+  var dailyMatches = [];
+
+  function reset() {
+    closeSheet();
+    modeScreen.classList.remove("hidden");
+    dailyScreen.classList.remove("show");
+    matchScreen.classList.remove("show");
+    roomBar.classList.remove("show");
+    stage.classList.add("hidden");
+    controls.classList.add("hidden");
+    hint.classList.add("hidden");
+    result.classList.remove("show");
+    counter.textContent = "";
+    pickedSlot = null;
+    dailyMatches = [];
+    slotBtns.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+    Array.prototype.slice.call(stage.querySelectorAll(".card")).forEach(function (c) { c.remove(); });
+  }
+
+  // 「今日、外で食う？」の枠選択へ
+  function openDaily() {
+    mode = "daily";
+    modeScreen.classList.add("hidden");
+    dailyScreen.classList.add("show");
+  }
+
+  function submitSlots() {
+    if (!pickedSlot) { showToast("枠を1つ選んでください"); return; }
+    dailyMatches = DECLARED.filter(function (d) { return d.slots.indexOf(pickedSlot) >= 0; });
+
+    var box = document.getElementById("matchBody");
+    if (dailyMatches.length) {
+      box.innerHTML =
+        '<div class="matchbox">' +
+          '<div class="cap">MATCH</div>' +
+          '<div class="line">' +
+            dailyMatches.map(function (d) { return d.f.name; }).join("・") +
+            ' も、今日の' + pickedSlot + 'に外で食う。</div>' +
+          '<div class="sub">お互いに宣言済みなので、誘う必要がありません。' +
+            'この通知は相手にも同時に届いています。</div>' +
+          '<div class="who-row">' +
+            dailyMatches.map(function (d) {
+              return '<span class="who-chip">🍽 ' + d.f.name + '</span>';
+            }).join("") +
+          '</div>' +
+        '</div>';
+      document.getElementById("toSwipe").textContent = "今日の3枚を見る";
+    } else {
+      box.innerHTML =
+        '<div class="matchbox quiet">' +
+          '<div class="cap">QUIET</div>' +
+          '<div class="line">今日の' + pickedSlot + '、一致した友達はいませんでした。</div>' +
+          '<div class="sub">名前は出しませんが、友達の2人が別の枠で外で食う予定です。' +
+            '誰かを名指しで誘う画面は用意していません。</div>' +
+        '</div>';
+      document.getElementById("toSwipe").textContent = "ひとりで店を決める";
+    }
+    dailyScreen.classList.remove("show");
+    matchScreen.classList.add("show");
+  }
+
+  // 今日の3枚（＋広告1枚）
+  function buildDailyDeck() {
+    var shops = SHOPS.slice();
+    for (var i = shops.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = shops[i]; shops[i] = shops[j]; shops[j] = t;
+    }
+    var three = shops.slice(0, 3);
+    return [
+      { type: "shop", data: three[0] },
+      { type: "shop", data: three[1] },
+      { type: "ad",   data: ADS[Math.floor(Math.random() * ADS.length)] },
+      { type: "shop", data: three[2] }
+    ];
+  }
+
+  function start(selectedMode) {
+    mode = selectedMode;
+    deck = (mode === "daily") ? buildDailyDeck() : buildDeck();
+    cursor = 0;
+    liked = [];
+    adSeen = 0;
+    adTapped = 0;
+    matchedFriends = [];
+    busy = false;
+
+    modeScreen.classList.add("hidden");
+    dailyScreen.classList.remove("show");
+    matchScreen.classList.remove("show");
+    result.classList.remove("show");
+    stage.classList.remove("hidden");
+    controls.classList.remove("hidden");
+    hint.classList.remove("hidden");
+
+    if (mode === "group") {
+      document.getElementById("roomCode").textContent =
+        String(Math.floor(1000 + Math.random() * 9000));
+      roomBar.classList.add("show");
+      hint.textContent = "その場の3人が同じ部屋でスワイプ中 ・ カードをタップで写真をもっと見る";
+    } else if (mode === "daily") {
+      roomBar.classList.remove("show");
+      hint.textContent = "今日の3枚だけ ・ カードをタップで写真をもっと見る";
+    } else {
+      roomBar.classList.remove("show");
+      hint.textContent = "左右にスワイプで判定 ・ カードをタップで写真をもっと見る";
+    }
+    render();
+  }
+
+  function render() {
+    Array.prototype.slice.call(stage.querySelectorAll(".card")).forEach(function (c) { c.remove(); });
+
+    var remaining = deck.length - cursor;
+    emptyMsg.style.display = remaining > 0 ? "none" : "grid";
+    counter.textContent = remaining > 0 ? (cursor + 1) + " / " + deck.length : deck.length + " / " + deck.length;
+    btnYes.disabled = remaining === 0;
+    btnNo.disabled  = remaining === 0;
+
+    var upto = Math.min(cursor + 3, deck.length);
+    for (var i = upto - 1; i >= cursor; i--) {
+      var depth = i - cursor;
+      var el = makeCard(deck[i], depth);
+      stage.appendChild(el);
+      if (depth === 0) attachDrag(el);
+    }
+  }
+
+  function makeCard(item, depth) {
+    var el = document.createElement("div");
+    el.className = "card" + (depth === 0 ? " top" : "") + (item.type === "ad" ? " ad" : "");
+    el.style.transform = "translateY(" + (depth * 10) + "px) scale(" + (1 - depth * 0.035) + ")";
+    el.style.zIndex = String(10 - depth);
+
+    var d = item.data;
+
+    if (item.type === "ad") {
+      var bar = document.createElement("div");
+      bar.className = "prbar";
+      bar.innerHTML = '<span>PR</span><span class="fake">架空の広告</span>';
+      el.appendChild(bar);
+    }
+
+    var art = document.createElement("div");
+    art.className = "art";
+    art.textContent = d.em;
+    if (item.type === "shop") art.style.background = "linear-gradient(160deg, var(--surface-2), var(--amber-soft))";
+    el.appendChild(art);
+
+    var meta = document.createElement("div");
+    meta.className = "meta";
+
+    var h = document.createElement("h2");
+    h.textContent = d.name;
+    meta.appendChild(h);
+
+    var w = document.createElement("div");
+    w.className = "where";
+    w.textContent = d.where;
+    meta.appendChild(w);
+
+    var tags = document.createElement("div");
+    tags.className = "tags";
+    if (item.type === "shop") {
+      var p = document.createElement("span");
+      p.className = "tag price";
+      p.textContent = "¥" + d.price;
+      tags.appendChild(p);
+    }
+    (item.type === "shop" ? d.tags : d.body).forEach(function (t) {
+      var s = document.createElement("span");
+      s.className = "tag";
+      s.textContent = t;
+      tags.appendChild(s);
+    });
+    meta.appendChild(tags);
+
+    if (item.type === "ad") {
+      var cta = document.createElement("div");
+      cta.className = "adcta";
+      cta.textContent = d.cta;
+      meta.appendChild(cta);
+    }
+    el.appendChild(meta);
+
+    if (depth === 0) {
+      var yes = document.createElement("div");
+      yes.className = "stamp yes";
+      yes.textContent = item.type === "ad" ? "興味あり" : "いいね";
+      var no = document.createElement("div");
+      no.className = "stamp no";
+      no.textContent = "パス";
+      el.appendChild(yes);
+      el.appendChild(no);
+    }
+    return el;
+  }
+
+  function attachDrag(el) {
+    var startX = 0, startY = 0, dx = 0, dy = 0, active = false;
+    var yes = el.querySelector(".stamp.yes");
+    var no  = el.querySelector(".stamp.no");
+
+    el.addEventListener("pointerdown", function (e) {
+      if (busy) return;
+      active = true;
+      startX = e.clientX; startY = e.clientY;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add("dragging");
+      el.classList.remove("anim");
+    });
+
+    el.addEventListener("pointermove", function (e) {
+      if (!active) return;
+      dx = e.clientX - startX;
+      dy = e.clientY - startY;
+      el.style.transform = "translate(" + dx + "px," + dy + "px) rotate(" + (dx / 18) + "deg)";
+      var t = Math.min(Math.abs(dx) / 95, 1);
+      yes.style.opacity = dx > 0 ? t : 0;
+      no.style.opacity  = dx < 0 ? t : 0;
+    });
+
+    function release() {
+      if (!active) return;
+      active = false;
+      el.classList.remove("dragging");
+      if (Math.abs(dx) > 90) {
+        decide(dx > 0 ? 1 : -1);
+      } else {
+        var wasTap = Math.abs(dx) < 8 && Math.abs(dy) < 8;
+        el.classList.add("anim");
+        el.style.transform = "translateY(0) scale(1)";
+        yes.style.opacity = 0;
+        no.style.opacity = 0;
+        // タップ＝詳細を開く（マッチングアプリと同じ挙動）
+        if (wasTap && cursor < deck.length && deck[cursor].type === "shop") {
+          openSheet(deck[cursor].data);
+        }
+      }
+      dx = 0; dy = 0;
+    }
+    el.addEventListener("pointerup", release);
+    el.addEventListener("pointercancel", release);
+  }
+
+  function decide(dir) {
+    if (busy || cursor >= deck.length) return;
+    busy = true;
+
+    var item = deck[cursor];
+    var el = stage.querySelector(".card.top");
+    if (el) {
+      el.classList.add("anim");
+      el.style.transform = "translate(" + (dir * 520) + "px, 40px) rotate(" + (dir * 24) + "deg)";
+      el.style.opacity = "0";
+    }
+
+    if (item.type === "ad") {
+      adSeen++;
+      if (dir > 0) adTapped++;
+    } else if (dir > 0) {
+      liked.push(item.data);
+      if (mode === "group") {
+        var also = FRIENDS.filter(function (f) { return friendLikes(f, item.data); })
+                          .map(function (f) { return f.name; });
+        if (also.length) showToast(also.join("・") + " も「" + item.data.name + "」に○");
+      } else if (mode === "daily") {
+        var alsoD = dailyMatches.filter(function (d) { return friendLikes(d.f, item.data); })
+                                .map(function (d) { return d.f.name; });
+        if (alsoD.length) showToast(alsoD.join("・") + " も「" + item.data.name + "」が好きそう");
+      } else {
+        var friend = FRIEND_HITS[item.data.name];
+        if (friend) {
+          matchedFriends.push({ who: friend, shop: item.data.name });
+          showToast(friend + "も「" + item.data.name + "」をいいねしています");
+        }
+      }
+    }
+
+    cursor++;
+    setTimeout(function () {
+      busy = false;
+      if (cursor >= deck.length) finish();
+      else render();
+    }, 260);
+  }
+
+  // ---------- 詳細シート（カードをタップで開く） ----------
+  var sheet = document.getElementById("sheet");
+  var sheetInner = document.getElementById("sheetInner");
+
+  function openSheet(shop) {
+    var photos = shop.photos || [shop.em];
+    var isChain = !!shop.chain;
+
+    var photoHtml = photos.map(function (p) {
+      return '<div class="photo">' + p + '</div>';
+    }).join("");
+    if (isChain) {
+      photoHtml += '<div class="photo more">チェーン店は<br>代表1枚だけ</div>';
+    }
+
+    var menuHtml = (shop.menu || []).map(function (m) {
+      var parts = m.split(" ¥");
+      return parts.length === 2
+        ? '<li><span>' + parts[0] + '</span><span>¥' + parts[1] + '</span></li>'
+        : '<li><span>' + m + '</span></li>';
+    }).join("");
+
+    var srcNote = isChain
+      ? "チェーン店は誰でも味を知っているので、写真は代表1枚だけ。枚数を集めません。"
+      : "写真 " + photos.length + "枚はユーザーが撮って提供したもの。採用された1枚に、この店で使えるクーポンが出ます。";
+
+    sheetInner.innerHTML =
+      '<div class="grip"></div>' +
+      '<div class="photos">' + photoHtml + '</div>' +
+      '<h2>' + shop.name + (isChain ? '<span class="badge">CHAIN</span>' : '') + '</h2>' +
+      '<div class="where">' + shop.where + ' ・ ¥' + shop.price + '</div>' +
+      (menuHtml ? '<ul class="menu">' + menuHtml + '</ul>' : '') +
+      '<p class="srcnote">' + srcNote + '</p>' +
+      '<div class="sheet-actions">' +
+        '<button class="ng" id="sheetNo">パス</button>' +
+        '<button class="ok" id="sheetYes">いいね</button>' +
+      '</div>';
+
+    sheet.classList.add("show");
+    document.getElementById("sheetYes").addEventListener("click", function () { closeSheet(); decide(1); });
+    document.getElementById("sheetNo").addEventListener("click", function () { closeSheet(); decide(-1); });
+  }
+
+  function closeSheet() { sheet.classList.remove("show"); }
+
+  sheet.addEventListener("click", function (e) { if (e.target === sheet) closeSheet(); });
+
+  var toastTimer = null;
+  function showToast(text) {
+    toastTxt.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2600);
+  }
+
+  function profile() {
+    var sum = {};
+    AXES.forEach(function (ax) { sum[ax.k] = 0; });
+    liked.forEach(function (s) {
+      AXES.forEach(function (ax) { sum[ax.k] += (s.v[ax.k] || 0); });
+    });
+    var max = Math.max.apply(null, AXES.map(function (ax) { return sum[ax.k]; }));
+    return { sum: sum, max: max || 1 };
+  }
+
+  // --- 決定ロジック : 何があっても必ず1軒返す ---
+  function decideGroup() {
+    // 全員一致は起きないので多数決。同点は安い方。
+    var scored = SHOPS.map(function (s) {
+      var votes = (liked.indexOf(s) >= 0) ? 1 : 0;
+      var who = [];
+      if (votes) who.push("自分");
+      FRIENDS.forEach(function (f) {
+        if (friendLikes(f, s)) { votes++; who.push(f.name); }
+      });
+      return { s: s, votes: votes, who: who };
+    }).sort(function (a, b) {
+      if (b.votes !== a.votes) return b.votes - a.votes;
+      return a.s.price - b.s.price;
+    });
+    return scored;
+  }
+
+  function decideSolo(pf) {
+    var pool = SHOPS.concat(HIDDEN);
+    var scored = pool.map(function (s) {
+      return { s: s, dot: dot(s.v, pf.sum) };
+    }).sort(function (a, b) {
+      if (b.dot !== a.dot) return b.dot - a.dot;
+      return a.s.price - b.s.price;
+    });
+    return scored;
+  }
+
+  function topAxisLabel(pf) {
+    var best = AXES[0], bestVal = -1;
+    AXES.forEach(function (ax) {
+      if (pf.sum[ax.k] > bestVal) { bestVal = pf.sum[ax.k]; best = ax; }
+    });
+    return bestVal > 0 ? best.label : null;
+  }
+
+  function finish() {
+    stage.classList.add("hidden");
+    controls.classList.add("hidden");
+    hint.classList.add("hidden");
+    counter.textContent = deck.length + " / " + deck.length;
+
+    var pf = profile();
+    var hero = document.getElementById("hero");
+    var altBox = document.getElementById("alt");
+    var altTitle = document.getElementById("altTitle");
+    altBox.innerHTML = "";
+
+    var picked, why, voteBadge = "", alts;
+
+    if (mode === "daily") {
+      // 今日の3枚から必ず1軒。自分の好み＋マッチした友達の好みを合算
+      var combined = {};
+      AXES.forEach(function (ax) { combined[ax.k] = pf.sum[ax.k]; });
+      dailyMatches.forEach(function (d) {
+        AXES.forEach(function (ax) { combined[ax.k] += (d.f.v[ax.k] || 0); });
+      });
+      var todays = deck.filter(function (it) { return it.type === "shop"; })
+                       .map(function (it) { return it.data; });
+      var dscored = todays.map(function (s) {
+        return { s: s, sc: dot(s.v, combined) + (liked.indexOf(s) >= 0 ? 50 : 0) };
+      }).sort(function (a, b) {
+        if (b.sc !== a.sc) return b.sc - a.sc;
+        return a.s.price - b.s.price;
+      });
+      picked = dscored[0].s;
+      var names = dailyMatches.map(function (d) { return d.f.name; });
+      voteBadge = pickedSlot || "";
+      why = names.length
+        ? "<b>" + names.join("・") + "</b> と行くなら、今日の3枚ではここ。誘う連絡は要りません。"
+        : (liked.length
+            ? "今日の3枚から、あなたの好みに一番近い1軒を選びました。"
+            : "3枚とも見送りだったので、一番安い店に決めました。<b>それでも1軒は必ず出します。</b>");
+      altTitle.textContent = "今日の残り2枚";
+      alts = dscored.slice(1, 3).map(function (o) { return { s: o.s, label: "次点" }; });
+    } else if (mode === "group") {
+      var g = decideGroup();
+      picked = g[0].s;
+      voteBadge = "3人中 " + g[0].votes + "人が○";
+      why = g[0].votes > 0
+        ? "<b>" + g[0].who.join("・") + "</b> が行きたい店です。票が割れたので多数決で決めました。"
+        : "全員パスだったので、一番安い店に決めました。<b>それでも1軒は必ず出します。</b>";
+      altTitle.textContent = "次点";
+      alts = g.slice(1, 3).map(function (o) {
+        return { s: o.s, label: o.votes + "票" };
+      });
+    } else {
+      var sc = decideSolo(pf);
+      picked = sc[0].s;
+      var ax = topAxisLabel(pf);
+      why = ax
+        ? "スワイプから出た好みは <b>" + ax + "</b>。そこに一番近い店です。"
+        : "いいねが0件だったので、一番安い店に決めました。<b>それでも1軒は必ず出します。</b>";
+      altTitle.textContent = "ほかの候補";
+      var best = sc[0].dot || 1;
+      alts = sc.slice(1, 3).map(function (o) {
+        return { s: o.s, label: Math.round(o.dot / best * 100) + "%" };
+      });
+    }
+
+    hero.innerHTML =
+      '<div class="cap"><span>今日の1軒</span><span class="vote">' + voteBadge + '</span></div>' +
+      '<div class="big">' + picked.em + '</div>' +
+      '<div class="body">' +
+        '<h2>' + picked.name + '</h2>' +
+        '<div class="where">' + picked.where + ' ・ ¥' + picked.price + '</div>' +
+        '<p class="why">' + why + '</p>' +
+      '</div>';
+
+    alts.forEach(function (o) {
+      var d = document.createElement("div");
+      d.className = "item";
+      d.innerHTML =
+        '<div class="em">' + o.s.em + '</div>' +
+        '<div class="txt"><b>' + o.s.name + '</b><small>' + o.s.where + ' ・ ¥' + o.s.price + '</small></div>' +
+        '<div class="score">' + o.label + '</div>';
+      altBox.appendChild(d);
+    });
+
+    // 好みの6軸
+    var axisBox = document.getElementById("axis");
+    axisBox.innerHTML = "";
+    AXES.slice().sort(function (a, b) { return pf.sum[b.k] - pf.sum[a.k]; }).forEach(function (ax) {
+      var pct = liked.length ? Math.round(pf.sum[ax.k] / pf.max * 100) : 0;
+      var row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML =
+        '<div class="name">' + ax.label + '</div>' +
+        '<div class="bar"><span></span></div>' +
+        '<div class="pct">' + pct + '%</div>';
+      axisBox.appendChild(row);
+      requestAnimationFrame(function () { row.querySelector(".bar span").style.width = pct + "%"; });
+    });
+
+    // 友達マッチ
+    if (mode === "group") {
+      friendPanel.classList.add("hidden");
+    } else if (mode === "daily") {
+      friendPanel.classList.remove("hidden");
+      friendPanel.querySelector("h3").textContent = "今日、一緒に行ける友達";
+      var dBox = document.getElementById("friends");
+      dBox.innerHTML = "";
+      if (!dailyMatches.length) {
+        dBox.innerHTML = '<p class="note" style="margin:0">今日の' + pickedSlot +
+          'は一致した友達がいませんでした。名前は出しません。</p>';
+      } else {
+        dailyMatches.forEach(function (d) {
+          var el = document.createElement("div");
+          el.className = "fr";
+          el.innerHTML = '<span>🍽</span><span><span class="who">' + d.f.name +
+            '</span> も今日の' + pickedSlot + 'に外で食う（宣言済み）</span>';
+          dBox.appendChild(el);
+        });
+      }
+    } else {
+      friendPanel.querySelector("h3").textContent = "友達とのマッチ（直近10日）";
+      friendPanel.classList.remove("hidden");
+      var frBox = document.getElementById("friends");
+      frBox.innerHTML = "";
+      if (!matchedFriends.length) {
+        frBox.innerHTML = '<p class="note" style="margin:0">今回は一致した友達がいませんでした。</p>';
+      } else {
+        matchedFriends.forEach(function (m) {
+          var d = document.createElement("div");
+          d.className = "fr";
+          d.innerHTML = '<span>🍽</span><span><span class="who">' + m.who + '</span> も「' + m.shop + '」に行きたがっています</span>';
+          frBox.appendChild(d);
+        });
+      }
+    }
+
+    document.getElementById("kImp").textContent = adSeen;
+    document.getElementById("kTap").textContent = adTapped;
+    document.getElementById("kCtr").textContent = (adSeen ? Math.round(adTapped / adSeen * 100) : 0) + "%";
+
+    result.classList.add("show");
+  }
+
+  document.getElementById("modeDaily").addEventListener("click", openDaily);
+  document.getElementById("modeSolo").addEventListener("click", function () { start("solo"); });
+  document.getElementById("modeGroup").addEventListener("click", function () { start("group"); });
+
+  slotBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.getAttribute("aria-pressed") === "true";
+      slotBtns.forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      if (on) { pickedSlot = null; }
+      else { b.setAttribute("aria-pressed", "true"); pickedSlot = b.dataset.slot; }
+    });
+  });
+  document.getElementById("slotSubmit").addEventListener("click", submitSlots);
+  document.getElementById("toSwipe").addEventListener("click", function () { start("daily"); });
+  btnYes.addEventListener("click", function () { decide(1); });
+  btnNo.addEventListener("click", function () { decide(-1); });
+  document.getElementById("again").addEventListener("click", reset);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && sheet.classList.contains("show")) { closeSheet(); return; }
+    if (sheet.classList.contains("show")) return;
+    if (result.classList.contains("show") || stage.classList.contains("hidden")) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); decide(1); }
+    if (e.key === "ArrowLeft")  { e.preventDefault(); decide(-1); }
+  });
+
+  reset();
+})();
+</script>
+</body>
+</html>
