@@ -1,0 +1,112 @@
+/* C案：企業ブランド／理念を主役に。参考=虎屋(toraya-group.co.jp)のトークン。
+   設計：明朝・weight400・字間normal・ジャンプ率を下げる・余白を広く取る。A案と真逆。 */
+:root{
+  --ink:#111111; --sub:#6B6B66; --line:#DCD8D0;
+  --bg:#FFFFFF; --bg-warm:#F6F3ED; --navy:#27455C; --gold:#8A7A55;
+  --s2:16px; --s3:24px; --s4:40px; --s5:72px; --s6:120px;
+  --maxw:1040px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Yu Gothic Medium","Hiragino Kaku Gothic ProN",sans-serif;
+  font-size:16px; line-height:2.0; letter-spacing:.04em; -webkit-font-smoothing:antialiased}
+img{max-width:100%; height:auto; display:block}
+a{color:inherit}
+.wrap{width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--s3)}
+.mincho{font-family:"Shippori Mincho","Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif; font-weight:400}
+
+.demo-note{background:#111; color:#fff; text-align:center; font-size:12.5px; padding:9px var(--s3); letter-spacing:.05em; line-height:1.7}
+.demo-note a{color:#E4C87A}
+
+.site-header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex; align-items:center; justify-content:space-between; height:72px}
+.brand{text-decoration:none; display:flex; align-items:baseline; gap:12px}
+.brand b{font-family:"Shippori Mincho",serif; font-weight:500; font-size:21px; letter-spacing:.22em; color:var(--ink)}
+.brand span{font-size:11px; color:var(--sub); letter-spacing:.16em}
+.gnav ul{display:flex; gap:30px; list-style:none; margin:0; padding:0}
+.gnav a{text-decoration:none; font-size:13.5px; letter-spacing:.1em; color:var(--ink)}
+.gnav a:hover{color:var(--gold)}
+.nav-toggle{display:none; background:none; border:0; width:42px; height:42px; cursor:pointer}
+.nav-toggle span{display:block; width:22px; height:1px; background:var(--ink); margin:6px auto}
+
+/* hero：写真は小さく。文字が主役。ジャンプ率を上げない */
+.hero{background:var(--bg-warm); padding-block:var(--s6); position:relative}
+.hero__inner{display:grid; grid-template-columns:1fr 300px; gap:var(--s5); align-items:center}
+.hero__label{font-size:12px; letter-spacing:.3em; color:var(--gold); margin:0 0 var(--s4)}
+.hero h1{font-family:"Shippori Mincho","Noto Serif JP",serif; font-weight:400;
+  font-size:clamp(30px,5.2vw,50px); letter-spacing:.1em; line-height:1.85; margin:0 0 var(--s4)}
+.hero p{margin:0; color:#3A3A36; line-height:2.15; font-size:15.5px; max-width:44ch}
+.hero figure{margin:0}
+.hero figure img{width:100%; aspect-ratio:3/4; object-fit:cover}
+.hero figcaption{font-size:11.5px; color:var(--sub); letter-spacing:.08em; margin-top:10px; line-height:1.8}
+
+.rule{width:36px; height:1px; background:var(--gold); margin:0 0 var(--s3)}
+
+.section{padding-block:var(--s6)}
+.section--warm{background:var(--bg-warm)}
+.shead{margin-bottom:var(--s5)}
+.shead .en{display:block; font-size:11.5px; letter-spacing:.3em; color:var(--gold); margin-bottom:14px}
+.shead h2{font-family:"Shippori Mincho",serif; font-weight:400; font-size:clamp(23px,3.2vw,32px);
+  letter-spacing:.12em; line-height:1.75; margin:0}
+.shead p{margin:var(--s3) 0 0; color:var(--sub); max-width:60ch; font-size:15px; line-height:2.1}
+
+/* 理念 */
+.creed{text-align:center; padding-block:var(--s6); background:var(--navy); color:#fff}
+.creed .en{font-size:11.5px; letter-spacing:.3em; color:#B8CBD9; margin:0 0 var(--s4)}
+.creed blockquote{font-family:"Shippori Mincho",serif; font-weight:400;
+  font-size:clamp(20px,3.4vw,34px); letter-spacing:.14em; line-height:2.15; margin:0 0 var(--s4)}
+.creed .eight{display:flex; flex-wrap:wrap; gap:9px 12px; justify-content:center; list-style:none; margin:0; padding:0}
+.creed .eight li{font-size:12.5px; letter-spacing:.14em; color:#CFDDE7; position:relative; padding-right:13px}
+.creed .eight li::after{content:"／"; position:absolute; right:-2px; opacity:.45}
+.creed .eight li:last-child{padding-right:0}
+.creed .eight li:last-child::after{display:none}
+
+/* 沿革 */
+.history{list-style:none; margin:0; padding:0; max-width:720px}
+.history li{display:grid; grid-template-columns:118px 1fr; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--line)}
+.history li:first-child{border-top:1px solid var(--line)}
+.history .yr{font-family:"Shippori Mincho",serif; font-size:19px; letter-spacing:.08em; color:var(--navy)}
+.history p{margin:0; font-size:15px; line-height:2.05}
+
+/* 数字（ジャンプ率を抑えた見せ方） */
+.figs{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:var(--s4)}
+.figs li{border-top:1px solid var(--line); padding-top:var(--s3)}
+.figs .v{font-family:"Shippori Mincho",serif; font-size:clamp(30px,4.4vw,42px); letter-spacing:.04em; color:var(--navy); line-height:1.3; display:block; margin-bottom:8px}
+.figs .v small{font-size:15px; margin-left:3px}
+.figs b{display:block; font-size:14px; font-weight:500; letter-spacing:.1em; margin-bottom:4px}
+.figs p{margin:0; font-size:13.5px; color:var(--sub); line-height:1.95}
+
+.btn{display:inline-flex; align-items:center; gap:12px; padding:16px 34px; text-decoration:none;
+  font-size:14px; letter-spacing:.14em; border:1px solid var(--navy); color:var(--navy); transition:.25s}
+.btn:hover{background:var(--navy); color:#fff}
+.btn--fill{background:var(--navy); color:#fff}
+.btn--fill:hover{background:#1B3345}
+
+.wip{border:1px solid var(--line); background:var(--bg-warm); padding:var(--s4); margin-top:var(--s5)}
+.wip strong{display:block; font-family:"Shippori Mincho",serif; font-size:17px; letter-spacing:.1em; margin-bottom:12px}
+.wip p{margin:0; font-size:14px; color:var(--sub); line-height:2}
+
+.site-footer{background:#fff; border-top:1px solid var(--line); padding-block:var(--s5) var(--s4); font-size:13px; color:var(--sub)}
+.site-footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:var(--s4); margin-bottom:var(--s4)}
+.site-footer h3{font-family:"Shippori Mincho",serif; font-weight:400; color:var(--ink); font-size:14px; letter-spacing:.14em; margin:0 0 12px}
+.site-footer ul{list-style:none; margin:0; padding:0; line-height:2.1}
+.site-footer a{color:var(--sub); text-decoration:none}
+.site-footer a:hover{color:var(--ink)}
+.copyright{border-top:1px solid var(--line); padding-top:var(--s3); font-size:12px; letter-spacing:.06em}
+
+@media (max-width:1023px){
+  .gnav{position:absolute; top:100%; left:0; right:0; background:#fff; max-height:0; overflow:hidden; transition:max-height .28s}
+  .gnav[data-open="true"]{max-height:70vh; overflow:auto; border-bottom:1px solid var(--line)}
+  .gnav ul{flex-direction:column; gap:0; padding:var(--s2) var(--s3)}
+  .gnav a{display:block; padding:14px 0; border-bottom:1px solid var(--line)}
+  .nav-toggle{display:block}
+  .hero__inner{grid-template-columns:1fr; gap:var(--s4)}
+  .hero figure{max-width:260px}
+}
+@media (max-width:639px){
+  body{font-size:15px}
+  .section,.hero,.creed{padding-block:var(--s5)}
+  .history li{grid-template-columns:1fr; gap:4px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}

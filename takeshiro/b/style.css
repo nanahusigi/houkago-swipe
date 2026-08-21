@@ -1,0 +1,145 @@
+/* B案：発注元（調達・技術）向け。情報密度で信頼を取る。
+   設計：白基調＋細い罫線グリッド／写真は脇役／表と数値が主役／ジャンプ率は中 */
+:root{
+  --ink:#0C1116; --sub:#5A6673; --line:#DDE2E7; --line-strong:#B9C1CA;
+  --bg:#FFFFFF; --bg-alt:#F7F9FB; --accent:#0B5FA5; 
+  --accent-d:#08477C; --warn:#B4551D;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:56px; --s6:88px;
+  --maxw:1120px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Noto Sans JP",-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic Medium",sans-serif;
+  font-size:15px; line-height:1.85; letter-spacing:.01em; -webkit-font-smoothing:antialiased}
+img{max-width:100%; height:auto; display:block}
+a{color:var(--accent)}
+.wrap{width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--s3)}
+.mono{font-family:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+.demo-note{background:#0C1116; color:#fff; text-align:center; font-size:12.5px; padding:9px var(--s3); letter-spacing:.03em; line-height:1.7}
+.demo-note a{color:#7FD3FF}
+
+/* header */
+.site-header{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line-strong)}
+.site-header .wrap{display:flex; align-items:center; justify-content:space-between; height:64px; gap:var(--s3)}
+.brand{display:flex; align-items:baseline; gap:9px; text-decoration:none; color:var(--ink)}
+.brand b{font-size:20px; letter-spacing:.14em; color:var(--accent)}
+.brand span{font-size:12px; color:var(--sub); letter-spacing:.08em}
+.gnav ul{display:flex; gap:22px; list-style:none; margin:0; padding:0}
+.gnav a{text-decoration:none; color:var(--ink); font-size:13px; letter-spacing:.04em}
+.gnav a:hover{color:var(--accent)}
+.nav-toggle{display:none; background:none; border:1px solid var(--line-strong); border-radius:3px; width:40px; height:36px; cursor:pointer}
+.nav-toggle span{display:block; width:20px; height:1.5px; background:var(--ink); margin:4px auto}
+
+/* hero：写真は帯状に薄く。主役はテキストと数値 */
+.hero{border-bottom:1px solid var(--line); background:var(--bg-alt); position:relative; overflow:hidden}
+.hero__bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.13; filter:grayscale(1)}
+.hero .wrap{position:relative; padding-block:var(--s6)}
+.hero__tag{display:inline-block; border:1px solid var(--accent); color:var(--accent); font-size:12px;
+  letter-spacing:.1em; padding:3px 11px; border-radius:2px; margin-bottom:var(--s3)}
+.hero h1{font-size:clamp(30px,5.4vw,52px); font-weight:700; letter-spacing:.02em; line-height:1.35; margin:0 0 var(--s3)}
+.hero__lead{font-size:clamp(15px,1.9vw,18px); color:var(--sub); max-width:56ch; margin:0 0 var(--s4); line-height:1.95}
+.hero__spec{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); border-top:1px solid var(--line-strong); border-left:1px solid var(--line-strong)}
+.hero__spec div{border-right:1px solid var(--line-strong); border-bottom:1px solid var(--line-strong); padding:14px var(--s2); background:rgba(255,255,255,.72)}
+.hero__spec dt{font-size:11.5px; color:var(--sub); letter-spacing:.08em; margin:0 0 4px}
+.hero__spec dd{margin:0; font-size:22px; font-weight:700; letter-spacing:.01em; line-height:1.3}
+.hero__spec dd small{font-size:13px; font-weight:400; margin-left:2px}
+
+/* section */
+.section{padding-block:var(--s6); border-bottom:1px solid var(--line)}
+.section--alt{background:var(--bg-alt)}
+.shead{display:flex; align-items:baseline; gap:14px; margin-bottom:var(--s5); flex-wrap:wrap;
+  border-left:3px solid var(--accent); padding-left:14px}
+.shead h2{font-size:clamp(20px,2.6vw,27px); font-weight:700; letter-spacing:.04em; margin:0}
+.shead .en{font-size:12px; color:var(--sub); letter-spacing:.16em}
+.lead{color:var(--sub); max-width:64ch; margin:calc(var(--s5) * -1 + var(--s3)) 0 var(--s4)}
+
+/* spec table */
+.spec{width:100%; border-collapse:collapse; font-size:14.5px}
+.spec caption{text-align:left; font-weight:700; letter-spacing:.05em; padding-bottom:10px; font-size:15px}
+.spec th,.spec td{border:1px solid var(--line-strong); padding:12px var(--s2); text-align:left; line-height:1.8; vertical-align:top}
+.spec thead th{background:var(--bg-alt); font-size:13px; letter-spacing:.06em; white-space:nowrap}
+.spec tbody th{background:var(--bg-alt); width:190px; font-weight:700; font-size:14px}
+.spec .num{font-weight:700; white-space:nowrap}
+
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:var(--s5)}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--s3)}
+
+/* item list（生産品目） */
+.items{list-style:none; margin:0; padding:0; border-top:1px solid var(--line-strong)}
+.items li{display:grid; grid-template-columns:60px 1fr; gap:var(--s3); align-items:start;
+  padding:18px var(--s2); border-bottom:1px solid var(--line-strong)}
+.items li:nth-child(odd){background:var(--bg-alt)}
+.items .no{font-weight:700; color:var(--accent); font-size:14px; letter-spacing:.06em; padding-top:2px}
+.items b{display:block; font-size:16px; letter-spacing:.03em; margin-bottom:3px}
+.items p{margin:0; color:var(--sub); font-size:14px; line-height:1.8}
+
+/* cert */
+.cert{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+.cert li{display:flex; gap:12px; align-items:flex-start; border:1px solid var(--line-strong); border-left:3px solid var(--accent); padding:13px var(--s2); background:#fff}
+.cert .mark{font-size:11px; font-weight:700; color:#fff; background:var(--accent); padding:2px 8px; border-radius:2px; letter-spacing:.06em; white-space:nowrap; margin-top:3px}
+.cert p{margin:0; font-size:14.5px; line-height:1.75}
+
+/* sites */
+.sitecards{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:var(--s3)}
+.sitecards figure{margin:0; border:1px solid var(--line-strong); background:#fff}
+.sitecards img{width:100%; aspect-ratio:4/3; object-fit:cover; filter:grayscale(.35)}
+.sitecards figcaption{padding:13px var(--s2); font-size:14px; line-height:1.7; border-top:1px solid var(--line)}
+.sitecards figcaption small{display:block; color:var(--sub); font-size:12px; margin-top:2px}
+
+/* clients */
+.clients{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); border-top:1px solid var(--line-strong); border-left:1px solid var(--line-strong)}
+.clients li{border-right:1px solid var(--line-strong); border-bottom:1px solid var(--line-strong);
+  padding:20px var(--s2); font-size:14.5px; font-weight:700; letter-spacing:.02em; background:#fff}
+
+/* philosophy（B案では控えめに） */
+.philo-min{background:var(--bg-alt); border:1px solid var(--line-strong); padding:var(--s4); }
+.philo-min p{margin:0; font-size:16px; line-height:1.95; letter-spacing:.03em}
+.philo-min small{display:block; color:var(--sub); font-size:12.5px; margin-top:10px; letter-spacing:.06em}
+
+/* note / placeholder */
+.note{border:1px dashed var(--line-strong); background:#fff; padding:var(--s4); color:var(--sub); font-size:14px; line-height:1.9}
+.note strong{display:block; color:var(--warn); font-size:14.5px; margin-bottom:6px; letter-spacing:.04em}
+
+/* contact */
+.contact{background:var(--accent); color:#fff; padding-block:var(--s6); border:0}
+.contact h2{font-size:clamp(21px,3vw,30px); letter-spacing:.05em; margin:0 0 var(--s2)}
+.contact p{color:#D3E6F7; margin:0 0 var(--s4)}
+.btns{display:flex; flex-wrap:wrap; gap:12px}
+.btn{display:inline-flex; align-items:center; gap:9px; padding:14px 26px; border-radius:3px;
+  text-decoration:none; font-weight:700; font-size:14.5px; letter-spacing:.04em; transition:.2s}
+.btn--w{background:#fff; color:var(--accent)}
+.btn--w:hover{background:#E7F1FA}
+.btn--o{border:1px solid rgba(255,255,255,.75); color:#fff}
+.btn--o:hover{background:rgba(255,255,255,.13)}
+.btn--a{background:var(--accent); color:#fff}
+.btn--a:hover{background:var(--accent-d)}
+.tel{font-size:26px; letter-spacing:.02em; font-weight:700}
+
+footer.site-footer{background:#0C1116; color:#98A4B0; padding-block:var(--s5) var(--s3); font-size:13px}
+.site-footer .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:var(--s4); margin-bottom:var(--s4)}
+.site-footer h3{color:#fff; font-size:13px; letter-spacing:.1em; margin:0 0 10px}
+.site-footer ul{list-style:none; margin:0; padding:0; line-height:1.95}
+.site-footer a{color:#98A4B0; text-decoration:none}
+.site-footer a:hover{color:#fff; text-decoration:underline}
+.copyright{border-top:1px solid rgba(255,255,255,.14); padding-top:var(--s3); font-size:12px}
+
+@media (max-width:1023px){
+  .gnav{position:absolute; top:100%; left:0; right:0; background:#fff; max-height:0; overflow:hidden;
+    transition:max-height .25s; border-bottom:0; box-shadow:0 8px 16px -10px rgba(0,0,0,.3)}
+  .gnav[data-open="true"]{max-height:70vh; overflow:auto; border-bottom:1px solid var(--line-strong)}
+  .gnav ul{flex-direction:column; gap:0; padding:var(--s2) var(--s3)}
+  .gnav a{display:block; padding:12px 0; border-bottom:1px solid var(--line)}
+  .nav-toggle{display:block}
+}
+@media (max-width:639px){
+  .section{padding-block:var(--s5)}
+  .lead{margin-top:calc(var(--s5) * -1 + var(--s2))}
+  .spec tbody th{width:auto; display:block; border-bottom:0}
+  .spec td{display:block}
+  .spec thead{display:none}
+  .items li{grid-template-columns:1fr; gap:2px}
+  .btns .btn{flex:1 1 100%; justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
