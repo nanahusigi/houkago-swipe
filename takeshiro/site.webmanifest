@@ -1,0 +1,8 @@
+{
+  "name": "株式会社竹代",
+  "short_name": "竹代",
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }],
+  "theme_color": "#213B6A",
+  "background_color": "#FFFFFF",
+  "display": "standalone"
+}
