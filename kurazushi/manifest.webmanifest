@@ -1,0 +1,14 @@
+{
+  "name": "くら寿司 わりかん電卓",
+  "short_name": "くら寿司計算",
+  "description": "誰が何を食べたかをタップで記録して、個別会計を自動計算",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fdf7f2",
+  "theme_color": "#c8102e",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

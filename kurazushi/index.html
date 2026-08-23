@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#c8102e">
+<title>くら寿司 わりかん電卓</title>
+<meta name="description" content="くら寿司で「誰が何を食べたか」をタップで記録して、個別会計の金額を自動計算するアプリ">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍣</text></svg>">
+<style>
+:root{
+  --bg:#fdf7f2; --panel:#ffffff; --line:#e9ddd2; --ink:#241a15; --sub:#7d6a5d;
+  --accent:#c8102e; --accent-ink:#fff; --chip:#f3e8de; --ok:#1f7a4d;
+  --shadow:0 1px 2px rgba(60,30,10,.06),0 6px 18px rgba(60,30,10,.06);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#17110e; --panel:#211a16; --line:#3a2e27; --ink:#f4ece6; --sub:#a9968a;
+    --accent:#ff5a6e; --accent-ink:#2a0008; --chip:#2e241e; --ok:#5fd39b;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{background:var(--bg)}
+body{
+  background:var(--bg); color:var(--ink); min-height:100dvh;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",sans-serif;
+  font-size:15px; line-height:1.5;
+  padding-bottom:calc(64px + var(--safe-b));
+}
+button,input{font:inherit;color:inherit}
+
+/* ---------- ヘッダー ---------- */
+header{
+  position:sticky; top:0; z-index:30; background:var(--accent); color:var(--accent-ink);
+  padding:10px 14px; display:flex; align-items:center; gap:8px;
+}
+header .brand{font-weight:800; letter-spacing:.02em}
+header .area{margin-left:auto; font-size:11px; opacity:.85}
+
+/* ---------- 人バー ---------- */
+#people-bar{
+  position:sticky; top:41px; z-index:29; background:var(--bg);
+  border-bottom:1px solid var(--line);
+  display:flex; gap:8px; padding:10px 12px; overflow-x:auto; scrollbar-width:none;
+}
+#people-bar::-webkit-scrollbar{display:none}
+.pchip{
+  flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start;
+  border:2px solid var(--line); background:var(--panel); border-radius:14px;
+  padding:6px 12px; min-width:88px; cursor:pointer; transition:.12s;
+}
+.pchip .pn{font-weight:700; font-size:13px; display:flex; align-items:center; gap:5px}
+.pchip .pd{width:8px;height:8px;border-radius:50%;background:var(--dot,#999)}
+.pchip .py{font-size:15px; font-weight:800; font-variant-numeric:tabular-nums}
+.pchip[aria-current="true"]{border-color:var(--dot,var(--accent)); box-shadow:var(--shadow)}
+.pchip[aria-current="true"] .pn{color:var(--dot)}
+.padd{flex:0 0 auto;border:1px dashed var(--line);background:transparent;border-radius:14px;padding:6px 14px;color:var(--sub);cursor:pointer}
+
+/* ---------- モードバー ---------- */
+#mode-bar{display:flex;align-items:center;gap:10px;padding:8px 12px}
+#share-toggle{
+  border:1px solid var(--line); background:var(--panel); border-radius:999px;
+  padding:6px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;
+}
+#share-toggle[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+#mode-hint{font-size:12px; color:var(--sub); line-height:1.35}
+
+/* ---------- 検索 ---------- */
+.search-wrap{position:relative; padding:4px 12px 10px}
+#q{
+  width:100%; padding:12px 40px 12px 40px; border-radius:12px;
+  border:1px solid var(--line); background:var(--panel); box-shadow:var(--shadow);
+}
+.search-wrap .ico{position:absolute; left:24px; top:50%; transform:translateY(-60%); color:var(--sub)}
+#clear{position:absolute; right:20px; top:50%; transform:translateY(-60%); border:0; background:transparent; color:var(--sub); font-size:20px; cursor:pointer; display:none}
+#cats{display:flex; gap:6px; padding:0 12px 10px; overflow-x:auto; scrollbar-width:none}
+#cats::-webkit-scrollbar{display:none}
+.cat{flex:0 0 auto; border:1px solid var(--line); background:var(--panel); border-radius:999px; padding:5px 12px; font-size:13px; cursor:pointer}
+.cat[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+
+/* ---------- 商品グリッド ---------- */
+#grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:8px; padding:0 12px 20px}
+.card{
+  position:relative; background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  overflow:hidden; cursor:pointer; box-shadow:var(--shadow); transition:transform .08s;
+  display:flex; flex-direction:column;
+}
+.card:active{transform:scale(.96)}
+.card .thumb{aspect-ratio:4/3; background:var(--chip); position:relative}
+.card .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+.card .thumb.noimg::after{content:"🍣"; position:absolute; inset:0; display:grid; place-items:center; font-size:26px; opacity:.5}
+.card .body{padding:6px 8px 8px}
+.card .cname{font-size:12px; font-weight:600; line-height:1.3; min-height:2.6em; overflow:hidden}
+.card .cprice{font-size:14px; font-weight:800; margin-top:2px; font-variant-numeric:tabular-nums}
+.card .cprice small{font-size:10px; color:var(--sub); font-weight:600; margin-left:4px}
+.card .badge{
+  position:absolute; top:6px; right:6px; min-width:24px; height:24px; padding:0 6px;
+  border-radius:999px; background:var(--dot,var(--accent)); color:#fff;
+  font-size:13px; font-weight:800; display:none; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+.card.has .badge{display:flex}
+.card .minus{
+  position:absolute; top:6px; left:6px; width:26px; height:26px; border-radius:50%;
+  border:0; background:rgba(0,0,0,.55); color:#fff; font-size:16px; line-height:1;
+  display:none; align-items:center; justify-content:center; cursor:pointer;
+}
+.card.has .minus{display:flex}
+.empty{padding:40px 16px; text-align:center; color:var(--sub); font-size:14px}
+
+/* ---------- 会計ビュー ---------- */
+#view-bill{padding:4px 12px 24px}
+.pcard{background:var(--panel); border:1px solid var(--line); border-left:5px solid var(--dot,var(--accent)); border-radius:14px; margin-bottom:12px; box-shadow:var(--shadow); overflow:hidden}
+.pcard .head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line)}
+.pcard .head .nm{font-weight:800; background:transparent; border:0; border-bottom:1px dashed transparent; padding:2px 0; min-width:0; flex:1}
+.pcard .head .nm:focus{outline:none; border-bottom-color:var(--sub)}
+.pcard .head .sum{font-size:19px; font-weight:800; font-variant-numeric:tabular-nums}
+.pcard .head .del{border:0;background:transparent;color:var(--sub);cursor:pointer;font-size:16px;padding:2px 4px}
+.lines{list-style:none; margin:0; padding:0}
+.lines li{display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid var(--line)}
+.lines li:last-child{border-bottom:0}
+.lines .ln{flex:1; min-width:0; font-size:13px}
+.lines .ln .sh{display:inline-block; font-size:10px; font-weight:700; color:var(--ok); border:1px solid var(--ok); border-radius:4px; padding:0 4px; margin-left:5px; vertical-align:1px}
+.lines .ln small{color:var(--sub); font-size:11px; display:block}
+.lines .qty{display:flex; align-items:center; gap:2px}
+.lines .qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-weight:700}
+.lines .qty span{min-width:22px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.lines .amt{width:58px; text-align:right; font-weight:700; font-variant-numeric:tabular-nums; font-size:13px}
+.nothing{padding:14px 12px; color:var(--sub); font-size:13px}
+.total-card{background:var(--ink); color:var(--bg); border-radius:14px; padding:14px; margin:4px 0 14px}
+.total-card .row{display:flex; justify-content:space-between; align-items:baseline}
+.total-card .big{font-size:28px; font-weight:800; font-variant-numeric:tabular-nums}
+.total-card .meta{font-size:12px; opacity:.8; margin-top:6px; display:flex; gap:12px; flex-wrap:wrap}
+.actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.actions button{flex:1 1 auto; min-width:130px; border:1px solid var(--line); background:var(--panel); border-radius:12px; padding:12px; font-weight:700; cursor:pointer}
+.actions button.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.actions button.danger{color:var(--accent)}
+.note{font-size:11px; color:var(--sub); margin-top:14px; line-height:1.6}
+.note a{color:inherit}
+
+/* ---------- 下タブ ---------- */
+#tabs{
+  position:fixed; left:0; right:0; bottom:0; z-index:40; display:flex;
+  background:var(--panel); border-top:1px solid var(--line);
+  padding-bottom:var(--safe-b);
+}
+#tabs button{flex:1; border:0; background:transparent; padding:12px 4px; font-weight:700; cursor:pointer; color:var(--sub)}
+#tabs button[aria-current="true"]{color:var(--accent)}
+#tabs b{font-variant-numeric:tabular-nums}
+
+/* ---------- トースト ---------- */
+#toast{
+  position:fixed; left:50%; bottom:calc(78px + var(--safe-b)); transform:translate(-50%,10px);
+  background:var(--ink); color:var(--bg); padding:9px 16px; border-radius:999px;
+  font-size:13px; font-weight:700; opacity:0; pointer-events:none; transition:.18s; z-index:50; white-space:nowrap;
+}
+#toast.show{opacity:1; transform:translate(-50%,0)}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">🍣 くら寿司 わりかん電卓</span>
+  <span class="area" id="area-label"></span>
+</header>
+
+<div id="people-bar"></div>
+
+<div id="mode-bar">
+  <button id="share-toggle" aria-pressed="false">🤝 シェア</button>
+  <span id="mode-hint"></span>
+</div>
+
+<main>
+  <section id="view-menu">
+    <div class="search-wrap">
+      <span class="ico">🔍</span>
+      <input id="q" type="search" enterkeyhint="search" autocomplete="off"
+             placeholder="商品名で検索（例: あぶり / aburi / 115）">
+      <button id="clear" aria-label="検索をクリア">×</button>
+    </div>
+    <div id="cats"></div>
+    <div id="grid"></div>
+  </section>
+
+  <section id="view-bill" hidden></section>
+</main>
+
+<nav id="tabs">
+  <button data-view="menu" aria-current="true">メニュー</button>
+  <button data-view="bill">会計 <b id="tab-total">¥0</b></button>
+</nav>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="menu.js"></script>
+<script>
+(() => {
+"use strict";
+
+const MENU = window.KURA_MENU || [];
+const META = window.KURA_META || {};
+const KEY  = "kura-warikan-v1";
+const COLORS = ["#c8102e","#1f7a4d","#2a6bd4","#c47b00","#8b46b8","#0a8f9c"];
+/* 皿としてカウントするカテゴリ（ビッくらポンは寿司5皿で1回） */
+const PLATE_CATS = new Set(["にぎり","にぎり一貫","ぐんかん・細巻"]);
+const CAT_LABEL = {
+  "にぎり":"にぎり", "にぎり一貫":"一貫", "ぐんかん・細巻":"軍艦・巻",
+  "サイドメニュー":"サイド", "デザート":"デザート・ドリンク"
+};
+
+/* ================= 検索用の正規化 =================
+   ・全角/半角、大文字/小文字をそろえる
+   ・カタカナ → ひらがな（「サーモン」でも「さーもん」でもヒット）
+   ・長音符と記号を落とす（「さーもん」→「さもん」）
+   これで「あぶり」と部分入力しただけで候補が絞れる。 */
+function norm(s){
+  return (s||"").normalize("NFKC").toLowerCase()
+    .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+    .replace(/[ー‐-―\-~〜]/g, "")
+    .replace(/[\s　・･、。,.\/()（）【】「」\[\]!！?？&＆%％#＃'"’”:：;；*＊+＋]/g, "");
+}
+/* 画像ファイル名からローマ字読みを拾う（"aburi" で検索できるようにするため） */
+function romaji(file){
+  let s = decodeURIComponent(file || "").replace(/\.(jpe?g|png|webp)$/i, "");
+  if (/^[0-9a-f]{20,}$/i.test(s)) return "";              // ハッシュ名の画像は読みが取れない
+  s = s.replace(/^\d{6}_/, "").replace(/^(fair|teiban|syokuzen|shokuzen)_/, "");
+  return s.replace(/[^a-z0-9]/gi, "").toLowerCase();
+}
+
+/* ================= メニューの前処理 ================= */
+const ITEMS = MENU.map(m => {
+  const price = parseInt(m.p, 10) || 0;
+  const kcal  = parseInt(m.k, 10) || 0;
+  return {
+    id: m.id, name: m.n, price, kcal, cat: m.c,
+    img: (META.imgBase || "") + m.i,
+    hay: norm(m.n) + " " + romaji(m.i) + " " + price
+  };
+});
+const CATS = [...new Set(ITEMS.map(i => i.cat))];
+
+/* ================= 状態 ================= */
+let state = load();
+let filterCat = "";
+let query = "";
+
+function load(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(KEY));
+    if (raw && Array.isArray(raw.people) && raw.people.length) return raw;
+  }catch(e){}
+  return { people:[{id:pid(), name:"自分"}], currentId:null, shareMode:false, lines:[] };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function pid(){ return "p" + Math.random().toString(36).slice(2,8); }
+function current(){
+  const p = state.people.find(p => p.id === state.currentId);
+  return p || state.people[0];
+}
+function colorOf(id){
+  const i = state.people.findIndex(p => p.id === id);
+  return COLORS[(i < 0 ? 0 : i) % COLORS.length];
+}
+const yen = n => "¥" + n.toLocaleString("ja-JP");
+
+/* ================= 集計 =================
+   シェア行は人数で割る。1円未満の端数は行ごとに配る相手をずらして、
+   誰か一人だけが損をしないようにする。合計は必ず一致する。 */
+function compute(){
+  const per = {};
+  state.people.forEach(p => per[p.id] = { yen:0, lines:[] });
+  let grand = 0, plates = 0, kcal = 0;
+
+  state.lines.forEach((ln, idx) => {
+    const owners = ln.owners.filter(id => per[id]);
+    if (!owners.length) return;
+    const total = ln.price * ln.qty;
+    grand += total;
+    kcal  += (ln.kcal || 0) * ln.qty;
+    if (PLATE_CATS.has(ln.cat)) plates += ln.qty;
+
+    const base  = Math.floor(total / owners.length);
+    const extra = total - base * owners.length;
+    const start = idx % owners.length;
+    owners.forEach((id, i) => {
+      const rank  = (i - start + owners.length) % owners.length;
+      const share = base + (rank < extra ? 1 : 0);
+      per[id].yen += share;
+      per[id].lines.push({ ln, share, shared: owners.length > 1, n: owners.length });
+    });
+  });
+  return { per, grand, plates, kcal };
+}
+
+/* ================= 描画：人バー ================= */
+function renderPeople(){
+  const { per } = compute();
+  const bar = document.getElementById("people-bar");
+  bar.innerHTML = "";
+  state.people.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "pchip";
+    b.style.setProperty("--dot", colorOf(p.id));
+    b.setAttribute("aria-current", p.id === current().id ? "true" : "false");
+    b.innerHTML = `<span class="pn"><i class="pd"></i>${esc(p.name)}</span>
+                   <span class="py">${yen(per[p.id] ? per[p.id].yen : 0)}</span>`;
+    b.onclick = () => { state.currentId = p.id; save(); renderAll(); };
+    bar.appendChild(b);
+  });
+  const add = document.createElement("button");
+  add.className = "padd";
+  add.textContent = "＋ 人を追加";
+  add.onclick = addPerson;
+  bar.appendChild(add);
+
+  const t = document.getElementById("share-toggle");
+  t.setAttribute("aria-pressed", state.shareMode ? "true" : "false");
+  document.getElementById("mode-hint").textContent = state.shareMode
+    ? `タップした商品は${state.people.length}人で均等割りされます`
+    : `タップした商品は「${current().name}」に加算されます`;
+}
+
+function addPerson(){
+  const name = (prompt("名前を入力（例：ゆうき）", "") || "").trim();
+  if (!name) return;
+  const p = { id: pid(), name };
+  state.people.push(p);
+  state.currentId = p.id;
+  save(); renderAll();
+  toast(`${name} を追加`);
+}
+
+/* ================= 描画：メニュー ================= */
+function renderCats(){
+  const wrap = document.getElementById("cats");
+  wrap.innerHTML = "";
+  [["","すべて"], ...CATS.map(c => [c, CAT_LABEL[c] || c])].forEach(([val, label]) => {
+    const b = document.createElement("button");
+    b.className = "cat";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", filterCat === val ? "true" : "false");
+    b.onclick = () => { filterCat = val; renderGrid(); renderCats(); };
+    wrap.appendChild(b);
+  });
+}
+
+function qtyOnCard(itemId){
+  /* いま選んでいる人が関わっている数（シェア含む）をバッジに出す */
+  return state.lines
+    .filter(l => l.itemId === itemId && l.owners.includes(current().id))
+    .reduce((s, l) => s + l.qty, 0);
+}
+
+function renderGrid(){
+  const grid = document.getElementById("grid");
+  const q = norm(query);
+  const list = ITEMS.filter(i =>
+    (!filterCat || i.cat === filterCat) && (!q || i.hay.includes(q))
+  );
+  grid.innerHTML = "";
+  if (!list.length){
+    grid.innerHTML = `<p class="empty">「${esc(query)}」に一致する商品がありません。<br>
+      期間限定メニューなどでここに無い場合は、会計タブの「自由入力で追加」から手で足せます。</p>`;
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  list.forEach(it => {
+    const n = qtyOnCard(it.id);
+    const el = document.createElement("div");
+    el.className = "card" + (n ? " has" : "");
+    el.style.setProperty("--dot", colorOf(current().id));
+    el.innerHTML = `
+      <div class="thumb"><img loading="lazy" decoding="async" alt="" src="${it.img}"></div>
+      <div class="body">
+        <div class="cname">${esc(it.name)}</div>
+        <div class="cprice">${yen(it.price)}${it.kcal ? `<small>${it.kcal}kcal</small>` : ""}</div>
+      </div>
+      <span class="badge">${n}</span>
+      <button class="minus" aria-label="1つ減らす">−</button>`;
+    const img = el.querySelector("img");
+    img.onerror = () => { img.remove(); el.querySelector(".thumb").classList.add("noimg"); };
+    el.addEventListener("click", e => {
+      if (e.target.closest(".minus")) { removeOne(it); return; }
+      addOne(it);
+    });
+    frag.appendChild(el);
+  });
+  grid.appendChild(frag);
+}
+
+/* ================= 加算・減算 ================= */
+function ownersNow(){
+  return state.shareMode ? state.people.map(p => p.id) : [current().id];
+}
+function lineKey(itemId, owners){ return itemId + "|" + [...owners].sort().join(","); }
+
+function addOne(it){
+  const owners = ownersNow();
+  const key = lineKey(it.id, owners);
+  const found = state.lines.find(l => lineKey(l.itemId, l.owners) === key);
+  if (found) found.qty++;
+  else state.lines.push({
+    itemId: it.id, name: it.name, price: it.price, kcal: it.kcal,
+    cat: it.cat, img: it.img, qty: 1, owners
+  });
+  save(); renderAll();
+  toast(state.shareMode
+    ? `${it.name} を${owners.length}人でシェア（1人 ${yen(Math.floor(it.price/owners.length))}〜）`
+    : `${current().name} に ${it.name} ${yen(it.price)}`);
+  if (navigator.vibrate) navigator.vibrate(8);
+}
+
+function removeOne(it){
+  /* カードの「−」は、いまの人が関わっている行を後ろから1つ減らす */
+  for (let i = state.lines.length - 1; i >= 0; i--){
+    const l = state.lines[i];
+    if (l.itemId === it.id && l.owners.includes(current().id)){
+      l.qty--;
+      if (l.qty <= 0) state.lines.splice(i, 1);
+      save(); renderAll();
+      toast(`${it.name} を1つ減らしました`);
+      return;
+    }
+  }
+}
+function bumpLine(ln, d){
+  ln.qty += d;
+  if (ln.qty <= 0) state.lines.splice(state.lines.indexOf(ln), 1);
+  save(); renderAll();
+}
+
+/* ================= 描画：会計 ================= */
+function renderBill(){
+  const { per, grand, plates, kcal } = compute();
+  const v = document.getElementById("view-bill");
+  const toNext = plates % 5 === 0 ? 5 : 5 - (plates % 5);
+
+  let html = `
+    <div class="total-card">
+      <div class="row"><span>みんなの合計</span><span class="big">${yen(grand)}</span></div>
+      <div class="meta">
+        <span>🍣 ${plates}皿</span>
+        <span>🎰 ビッくらポンまであと${toNext}皿</span>
+        <span>🔥 ${kcal.toLocaleString("ja-JP")}kcal</span>
+      </div>
+    </div>`;
+
+  state.people.forEach(p => {
+    const d = per[p.id];
+    html += `<div class="pcard" style="--dot:${colorOf(p.id)}">
+      <div class="head">
+        <input class="nm" value="${esc(p.name)}" data-rename="${p.id}" aria-label="名前">
+        <span class="sum">${yen(d.yen)}</span>
+        ${state.people.length > 1 ? `<button class="del" data-delperson="${p.id}" aria-label="この人を削除">✕</button>` : ""}
+      </div>`;
+    if (!d.lines.length){
+      html += `<p class="nothing">まだ何も入っていません。</p>`;
+    } else {
+      html += `<ul class="lines">`;
+      d.lines.forEach((row, i) => {
+        const ln = row.ln;
+        html += `<li>
+          <div class="ln">${esc(ln.name)}${row.shared ? `<span class="sh">${row.n}人でシェア</span>` : ""}
+            <small>${yen(ln.price)} × ${ln.qty}${row.shared ? ` ÷ ${row.n}人` : ""}</small></div>
+          <div class="qty">
+            <button data-line="${state.lines.indexOf(ln)}" data-d="-1" aria-label="減らす">−</button>
+            <span>${ln.qty}</span>
+            <button data-line="${state.lines.indexOf(ln)}" data-d="1" aria-label="増やす">＋</button>
+          </div>
+          <div class="amt">${yen(row.share)}</div>
+        </li>`;
+      });
+      html += `</ul>`;
+    }
+    html += `</div>`;
+  });
+
+  html += `<div class="actions">
+      <button id="btn-custom">＋ 自由入力で追加</button>
+      <button id="btn-copy" class="primary">結果をコピー</button>
+      <button id="btn-reset" class="danger">全部リセット</button>
+    </div>
+    <p class="note">
+      価格は<b>${esc(META.area || "")}</b>の税込価格（${esc(META.updated || "")}時点、
+      <a href="${esc(META.source || "#")}" target="_blank" rel="noopener">くら寿司公式サイト</a>より）。<br>
+      1皿120円〜／130円〜／150円〜の店舗は公式でもPDFのみの配布のため、このアプリには入っていません。
+      その場合や期間限定メニューは「自由入力で追加」を使ってください。<br>
+      シェア分の1円未満の端数は、行ごとに負担する人をずらして配分しています（合計は必ず一致します）。
+    </p>`;
+
+  v.innerHTML = html;
+
+  v.querySelectorAll("[data-line]").forEach(b => {
+    b.onclick = () => bumpLine(state.lines[+b.dataset.line], +b.dataset.d);
+  });
+  v.querySelectorAll("[data-rename]").forEach(inp => {
+    inp.onchange = () => {
+      const p = state.people.find(p => p.id === inp.dataset.rename);
+      const nm = inp.value.trim();
+      if (p && nm) { p.name = nm; save(); renderAll(); }
+      else inp.value = p ? p.name : "";
+    };
+  });
+  v.querySelectorAll("[data-delperson]").forEach(b => {
+    b.onclick = () => {
+      const p = state.people.find(p => p.id === b.dataset.delperson);
+      if (!p || !confirm(`${p.name} を削除します。この人の注文も消えます。`)) return;
+      state.people = state.people.filter(x => x.id !== p.id);
+      state.lines = state.lines
+        .map(l => ({ ...l, owners: l.owners.filter(id => id !== p.id) }))
+        .filter(l => l.owners.length);
+      if (state.currentId === p.id) state.currentId = state.people[0].id;
+      save(); renderAll();
+    };
+  });
+  document.getElementById("btn-custom").onclick = addCustom;
+  document.getElementById("btn-copy").onclick = copyResult;
+  document.getElementById("btn-reset").onclick = () => {
+    if (!confirm("注文をすべて消して最初からにします。よろしいですか？（人の名前は残ります）")) return;
+    state.lines = []; save(); renderAll(); toast("リセットしました");
+  };
+}
+
+function addCustom(){
+  const name = (prompt("商品名（メニューに無いもの・期間限定など）", "") || "").trim();
+  if (!name) return;
+  const price = parseInt((prompt(`「${name}」の金額（税込・数字だけ）`, "") || "").replace(/[^\d]/g, ""), 10);
+  if (!price) return;
+  const owners = ownersNow();
+  state.lines.push({
+    itemId: "custom-" + Date.now(), name, price, kcal: 0,
+    cat: "自由入力", img: "", qty: 1, owners
+  });
+  save(); renderAll();
+  toast(`${name} ${yen(price)} を追加`);
+}
+
+/* ================= 結果コピー ================= */
+function buildText(){
+  const { per, grand, plates } = compute();
+  const d = new Date();
+  const lines = [`🍣 くら寿司 会計（${d.getMonth()+1}/${d.getDate()}）`, "──────────────"];
+  state.people.forEach(p => {
+    lines.push(`${p.name}  ${yen(per[p.id].yen)}`);
+    per[p.id].lines.forEach(r => {
+      lines.push(`  ・${r.ln.name} ×${r.ln.qty}${r.shared ? `（${r.n}人シェア）` : ""}  ${yen(r.share)}`);
+    });
+  });
+  lines.push("──────────────", `合計 ${yen(grand)} / ${plates}皿`);
+  return lines.join("\n");
+}
+async function copyResult(){
+  const text = buildText();
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("コピーしました");
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("コピーしました"); }
+    catch(_) { prompt("コピーしてください", text); }
+    ta.remove();
+  }
+}
+
+/* ================= 共通 ================= */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1600);
+}
+function renderAll(){
+  renderPeople();
+  renderGrid();
+  if (!document.getElementById("view-bill").hidden) renderBill();
+  document.getElementById("tab-total").textContent = yen(compute().grand);
+}
+
+/* ================= 初期化 ================= */
+document.getElementById("area-label").textContent = META.area || "";
+
+const qEl = document.getElementById("q");
+qEl.addEventListener("input", () => {
+  query = qEl.value;
+  document.getElementById("clear").style.display = query ? "block" : "none";
+  renderGrid();
+});
+document.getElementById("clear").onclick = () => {
+  qEl.value = ""; query = "";
+  document.getElementById("clear").style.display = "none";
+  renderGrid(); qEl.focus();
+};
+document.getElementById("share-toggle").onclick = () => {
+  if (state.people.length < 2 && !state.shareMode){
+    toast("シェアを使うには2人以上必要です");
+    return;
+  }
+  state.shareMode = !state.shareMode;
+  save(); renderAll();
+};
+document.querySelectorAll("#tabs button").forEach(b => {
+  b.onclick = () => {
+    const view = b.dataset.view;
+    document.querySelectorAll("#tabs button").forEach(x =>
+      x.setAttribute("aria-current", x === b ? "true" : "false"));
+    document.getElementById("view-menu").hidden = view !== "menu";
+    document.getElementById("view-bill").hidden = view !== "bill";
+    if (view === "bill") renderBill();
+    window.scrollTo(0, 0);
+  };
+});
+
+renderCats();
+renderAll();
+
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", () =>
+    navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+})();
+</script>
+</body>
+</html>
