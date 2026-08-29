@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小澤昊真｜武蔵野大学 総合型選抜 ポートフォリオ</title>
+<meta name="description" content="愛知県の高校生・小澤昊真の活動記録。作ったもの、動いたこと、考え方をまとめたポートフォリオサイトです。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f5f3ef;
+    --paper-2:#ffffff;
+    --ink:#12100e;
+    --ink-2:#4a453e;
+    --ink-3:#8b847a;
+    --red:#d3202b;
+    --red-deep:#9e1119;
+    --line:#ddd6c9;
+    --maxw:900px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans JP",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+    line-height:1.9;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  h1,h2,h3{margin:0;font-weight:900;letter-spacing:-0.02em;line-height:1.25;}
+  p{margin:0 0 1.1em;color:var(--ink-2);}
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    padding:44px 0 68px;
+    overflow:hidden;
+  }
+  .hero-slash{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:300px;
+    background:var(--red);
+    clip-path:polygon(0 46%, 100% 0, 100% 100%, 0 100%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .hero .wrap{position:relative;z-index:1;}
+  .badge{
+    display:inline-block;
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    line-height:1.6;
+    color:#fff;
+    background:var(--ink);
+    padding:6px 13px;
+    margin-bottom:30px;
+  }
+  .hero h1{
+    font-size:clamp(2.9rem, 13vw, 5.6rem);
+    line-height:1.12;
+    letter-spacing:-0.045em;
+    margin-bottom:26px;
+  }
+  .hero h1 .rl{color:var(--red);}
+  .whoami{
+    display:flex;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:6px 16px;
+    padding-top:18px;
+    border-top:3px solid var(--ink);
+    margin-bottom:14px;
+  }
+  .whoami .nm{
+    font-size:1.45rem;
+    font-weight:900;
+    letter-spacing:.04em;
+  }
+  .whoami .mt{
+    font-size:.82rem;
+    color:var(--ink-3);
+    font-weight:500;
+  }
+  .hero .sub{
+    font-size:1rem;
+    color:var(--ink-2);
+    margin-bottom:34px;
+    max-width:34em;
+  }
+
+  .video-box{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    background:#12100e;
+    border:3px solid var(--ink);
+  }
+  .video-box video{width:100%;height:100%;object-fit:cover;display:block;}
+  .video-placeholder{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:14px;text-align:center;padding:22px;
+  }
+  .video-placeholder .play{
+    width:62px;height:62px;
+    background:var(--red);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .video-placeholder .play svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
+  .video-placeholder .msg{
+    font-size:.8rem;color:#aaa39a;
+    letter-spacing:.08em;font-weight:500;
+  }
+  .video-caption{margin-top:11px;font-size:.78rem;color:#f2cdcf;font-weight:500;}
+
+  /* ============ SECTIONS ============ */
+  section{padding:96px 0;position:relative;}
+  .sec-head{margin-bottom:14px;}
+  .sec-num{
+    display:block;
+    font-size:.78rem;
+    font-weight:900;
+    letter-spacing:.22em;
+    color:var(--red);
+    margin-bottom:14px;
+  }
+  .sec-num:before{
+    content:"";
+    display:inline-block;
+    width:34px;height:3px;
+    background:var(--red);
+    vertical-align:middle;
+    margin-right:11px;
+    transform:translateY(-2px);
+  }
+  h2{
+    font-size:clamp(2rem, 7.5vw, 3.1rem);
+    line-height:1.24;
+    margin-bottom:24px;
+  }
+  .lead{
+    font-size:1.04rem;
+    color:var(--ink);
+    font-weight:500;
+    max-width:36em;
+  }
+  .sec-alt{background:var(--paper-2);}
+
+  /* ---- facts ---- */
+  .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px;}
+  .facts span{
+    font-size:.82rem;
+    font-weight:700;
+    color:var(--ink);
+    border:2px solid var(--ink);
+    padding:6px 14px;
+  }
+
+  /* ---- work cards ---- */
+  .cards{margin-top:46px;}
+  .card{
+    background:var(--paper-2);
+    border:3px solid var(--ink);
+    padding:30px 26px 28px;
+    margin-bottom:22px;
+  }
+  .sec-alt .card{background:var(--paper);}
+  .card:last-child{margin-bottom:0;}
+  .card-meta{
+    font-size:.72rem;
+    font-weight:900;
+    letter-spacing:.12em;
+    color:var(--red);
+    margin-bottom:9px;
+  }
+  .card h3{
+    font-size:clamp(1.25rem, 4.6vw, 1.6rem);
+    line-height:1.35;
+    margin-bottom:14px;
+  }
+  .card p{font-size:.95rem;margin-bottom:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;}
+  .chips span{
+    font-size:.74rem;
+    font-weight:700;
+    color:var(--ink-2);
+    background:var(--paper);
+    padding:4px 11px;
+  }
+  .sec-alt .chips span{background:var(--paper-2);}
+  .card-link{
+    display:inline-block;
+    margin-top:18px;
+    font-size:.86rem;
+    font-weight:900;
+    letter-spacing:.04em;
+    color:#fff;
+    background:var(--red);
+    padding:10px 20px;
+    text-decoration:none;
+    transition:background .15s;
+  }
+  .card-link:hover{background:var(--red-deep);}
+  .card-link:after{content:" →";}
+
+  /* ---- cycle ---- */
+  .cycle{
+    display:flex;flex-wrap:wrap;align-items:center;
+    gap:8px;margin:38px 0 52px;
+  }
+  .cycle b{
+    font-size:.86rem;font-weight:900;
+    color:#fff;background:var(--ink);
+    padding:8px 15px;
+  }
+  .cycle i{font-style:normal;color:var(--red);font-weight:900;}
+
+  /* ---- examples ---- */
+  .ex{
+    border-left:5px solid var(--red);
+    padding:2px 0 2px 22px;
+    margin-bottom:40px;
+  }
+  .ex:last-child{margin-bottom:0;}
+  .ex h3{font-size:1.15rem;margin-bottom:16px;}
+  .ex dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 16px;}
+  .ex dt{
+    font-size:.7rem;font-weight:900;letter-spacing:.08em;
+    color:var(--red);white-space:nowrap;padding-top:5px;
+  }
+  .ex dd{margin:0;font-size:.95rem;color:var(--ink-2);}
+
+  /* ---- timeline ---- */
+  .tl{margin-top:46px;}
+  .tl-i{position:relative;padding-left:34px;padding-bottom:40px;}
+  .tl-i:last-child{padding-bottom:0;}
+  .tl-i:before{
+    content:"";position:absolute;left:0;top:7px;
+    width:15px;height:15px;background:var(--red);
+  }
+  .tl-i:after{
+    content:"";position:absolute;left:6px;top:26px;bottom:0;
+    width:3px;background:var(--line);
+  }
+  .tl-i:last-child:after{display:none;}
+  .tl-st{
+    font-size:.71rem;font-weight:900;letter-spacing:.12em;
+    color:var(--red);margin-bottom:6px;
+  }
+  .tl-i h3{font-size:1.2rem;margin-bottom:9px;}
+  .tl-i p{font-size:.95rem;margin-bottom:0;}
+
+  /* ---- closing ---- */
+  .closing{
+    margin-top:60px;
+    background:var(--ink);
+    color:#fff;
+    padding:44px 30px;
+  }
+  .closing p{
+    color:#fff;
+    font-size:clamp(1.3rem, 5vw, 1.9rem);
+    font-weight:900;
+    line-height:1.55;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .closing .rl{color:#ff5a63;}
+
+  footer{
+    padding:44px 22px 66px;
+    text-align:center;
+    font-size:.76rem;
+    color:var(--ink-3);
+    line-height:2;
+  }
+
+  /* ---- reveal ---- */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease;}
+  .rv.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  @media (min-width:700px){
+    .hero{padding:56px 0 104px;}
+    .hero-slash{height:520px;clip-path:polygon(0 34%, 100% 0, 100% 100%, 0 100%);}
+    section{padding:118px 0;}
+    .card{padding:38px 36px 34px;}
+    .closing{padding:56px 48px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-slash"></div>
+  <div class="wrap">
+    <span class="badge">武蔵野大学 アントレプレナーシップ学部 志望</span>
+
+    <h1>思いついたら、<br>まず<span class="rl">作る</span>。</h1>
+
+    <div class="whoami">
+      <span class="nm">小澤 昊真</span>
+      <span class="mt">愛知県の高校生</span>
+    </div>
+    <p class="sub">出願書類のA4一枚には収まりきらなかったので、自分でこのサイトを作りました。実際にやってきたことと、考え方をまとめています。</p>
+
+    <div class="video-box">
+      <video id="heroVideo" playsinline controls style="display:none"></video>
+      <div class="video-placeholder" id="heroPlaceholder">
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="msg">動画準備中</div>
+      </div>
+    </div>
+    <div class="video-caption" id="videoCaption">自己紹介です。音声が出ます。</div>
+  </div>
+</header>
+
+<section id="who">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">01 ／ 自分について</span>
+      <h2>動けなかった自分が、<br>動けるようになった</h2>
+    </div>
+    <p class="lead rv">部活から帰って、ご飯を食べて、ゲームをして、勉強して、寝る。その繰り返しがずっと苦しかった。だから今は、面白そうなことのほうに目を向けて動くようにしています。人を動かすのも好きで、生徒会長のときは後輩一人ひとりに寄り添って、その子が自分から動き出す瞬間を何度も見ました。</p>
+    <p class="lead rv">昔は、思いついても行動に移せませんでした。それが少しずつできるようになって、その積み重ねが「いつか何か大きなことを成し遂げる」という、根拠のない確信になっています。</p>
+    <div class="facts rv">
+      <span>生徒会長／1,200人規模</span>
+      <span>水泳を小3から継続</span>
+      <span>AI活用 500時間超</span>
+    </div>
+  </div>
+</section>
+
+<section id="did" class="sec-alt">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">02 ／ やってきたこと</span>
+      <h2>作ったもの、<br>動いた記録</h2>
+    </div>
+    <p class="lead rv">「やりたい」ではなく、実際に手を動かしたものだけを並べています。</p>
+
+    <div class="cards">
+
+      <div class="card rv">
+        <div class="card-meta">制作</div>
+        <h3>Webサイトを、自分で作る</h3>
+        <p>「放課後スワイプ」も「くら寿司わりかん電卓」も、いま見ているこのサイトも、企画からコードまで自分で書いて形にしてきました。思いついたことをWebの形にするのが、いちばん使い慣れたやり方になっています。</p>
+        <div class="chips"><span># 企画から実装まで</span><span># AIを道具として使う</span></div>
+      </div>
+
+      <div class="card rv">
+        <div class="card-meta">共同開発 ／ 片山シュンと</div>
+        <h3>放課後スワイプ</h3>
+        <p>高校生が放課後に「今日どこ行く」を決められない問題を、誘う役ごとアプリに引き受けさせる構想です。スワイプで好みを抽出し、友達と時間が合えば両方に通知が届く仕組みを設計しました。共同創業者の片山シュンと打ち合わせを重ね、頭の中の構想を相手に同じ解像度で伝える難しさと向き合っています。</p>
+        <div class="chips"><span># 仲間と作る</span><span># 構想を言語化する</span></div>
+        <a class="card-link" href="https://nanahusigi.github.io/houkago-swipe/" target="_blank" rel="noopener">デモを見る</a>
+      </div>
+
+      <div class="card rv">
+        <div class="card-meta">個人開発 ／ 2026年8月</div>
+        <h3>「めんどくさい」を、7つに分解した</h3>
+        <p>くら寿司で個別会計にしたい場面。頼むたびにメモして、値段を思い出して、最後に手で足し算する。この「めんどくさい」をそのままにせず、どの動作がなぜ重いのかを7つに書き出しました。書き出し終えた時点で、必要な機能はほとんど決まっていました。できたものは、公式サイトの206品を画像つきで表示し、部分検索・シェアの自動割り勘・オフライン動作まで備えています。</p>
+        <div class="chips"><span># 不満を起点にする</span><span># 動作まで分解する</span></div>
+        <a class="card-link" href="https://nanahusigi.github.io/houkago-swipe/kurazushi/" target="_blank" rel="noopener">実際に使ってみる</a>
+      </div>
+
+      <div class="card rv">
+        <div class="card-meta">営業 ／ 2026年5〜7月</div>
+        <h3>15件まわって、契約ゼロ</h3>
+        <p>地元の美容院に15件以上、飛び込みで営業しました。結果は契約ゼロ。正直、心が折れかけました。でも「話し方が下手だった」で終わらせたくなくて、そもそも悩みを持っていない相手に営業していたのではないか、と考え直しました。だったら、悩んでいる人のほうから出てきてくれる場所に行けばいい。そう考えて、SNSでの発信に切り替えました。</p>
+        <div class="chips"><span># 失敗で終わらせない</span><span># 考え直して動き直す</span></div>
+      </div>
+
+      <div class="card rv">
+        <div class="card-meta">SNS ／ 2026年7月</div>
+        <h3>切り替えてからが、長かった</h3>
+        <p>場所を変えればすぐ届く、という話ではありませんでした。同じアカウント・同じフォロワー数でも、反応がある投稿とほとんど無反応の投稿がある。何が違ったのかを一本ずつ確かめて書き直す、を繰り返しました。その積み重ねの先で、美容師さんから初めて仕事の依頼をいただきました。（フォロワー29人の時点で、表示7,000回超・いいね37・返信29件）</p>
+        <div class="chips"><span># 一本ずつ検証する</span><span># 分析して書き直す</span></div>
+      </div>
+
+      <div class="card rv">
+        <div class="card-meta">進行中 ／ 2026年8月〜</div>
+        <h3>手を広げず、美容室に絞る</h3>
+        <p>無料でリール制作を募集したところ、美容師8名から応募がありました。そのうち1件は「無料でなく本気で頼みたい」と言われ、リサーチから構成設計・制作・納品まで一人でやり切りました。案件を重ねる中で、美容師側に共通する悩み（動画の知識がない、素材の撮り方がバラバラ）が見えてきた。だから色々な分野に手を広げるのをやめて、美容室向けに絞ると決め、専用アカウントを立ち上げて動いています。</p>
+        <div class="chips"><span># 一つに絞る</span><span># 続けて経験を積む</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="think">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">03 ／ 考え方</span>
+      <h2>気づいて、作って、<br>見せて、直す</h2>
+    </div>
+    <p class="lead rv">SNSで人の悩みや情報を見聞きしても、分かった気になるだけでした。本当に変えたいと思えるのは、いつも自分が当事者として困ったときです。だから、気づいたらまず自分で作ってみる。この動き方を繰り返しています。</p>
+
+    <div class="cycle rv">
+      <b>課題を見つける</b><i>▶</i>
+      <b>まず作る</b><i>▶</i>
+      <b>人に見せる</b><i>▶</i>
+      <b>反応を見る</b><i>▶</i>
+      <b>改善する</b>
+    </div>
+
+    <div class="ex rv">
+      <h3>不満を、動作まで分解する</h3>
+      <dl>
+        <dt>気づき</dt><dd>「めんどくさい」で止めている限り、何が問題なのか自分でも分かっていなかった</dd>
+        <dt>やった</dt><dd>どの動作がなぜ重いのかを7つに書き出し、そのまま作るものの中身にした</dd>
+        <dt>結果</dt><dd>迷わず作り切れて、実際に使えるものになった</dd>
+      </dl>
+    </div>
+
+    <div class="ex rv">
+      <h3>失敗を、能力のせいにしない</h3>
+      <dl>
+        <dt>気づき</dt><dd>契約ゼロは「話し方」ではなく、悩みのない相手に営業していたからだった</dd>
+        <dt>やった</dt><dd>悩んでいる人のほうから出てくる場所に移り、投稿を一本ずつ検証して書き直した</dd>
+        <dt>結果</dt><dd>分析と改善を重ねた先で、初めて仕事の依頼につながった</dd>
+      </dl>
+    </div>
+
+    <div class="ex rv">
+      <h3>広げるのをやめて、絞る</h3>
+      <dl>
+        <dt>気づき</dt><dd>案件を重ねるほど、美容師側に共通する悩みがはっきり見えてきた</dd>
+        <dt>やった</dt><dd>色々な分野に手を出すのをやめ、美容室向けに一本化すると決めた</dd>
+        <dt>結果</dt><dd>専用アカウントを新しく立ち上げ、いままさに動かしている</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="next" class="sec-alt">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">04 ／ これから</span>
+      <h2>一人で作る、から<br>仲間と作る、へ</h2>
+    </div>
+
+    <div class="tl">
+      <div class="tl-i rv">
+        <div class="tl-st">高校 ／ 一人で作る</div>
+        <h3>いま</h3>
+        <p>手を広げるのをやめて、まずは美容室向けのSNS支援を一つ極め、続けて経験を積みます。並行して、放課後スワイプの構想も共同創業者と育てています。</p>
+      </div>
+      <div class="tl-i rv">
+        <div class="tl-st">大学 ／ 仲間と作る</div>
+        <h3>武蔵野大学で</h3>
+        <p>一人で動いていた頃、動画や本で学んでも結局は分かった気になるだけで、動いて初めて分かるということを何度も味わいました。だから座学が中心の場所ではなく、実際に動ける環境と、そこで出会える仲間や人を求めて選びました。</p>
+      </div>
+      <div class="tl-i rv">
+        <div class="tl-st">在学中 ／ 事業として挑戦する</div>
+        <h3>一人で届く範囲を、超える</h3>
+        <p>サービスとは、誰かの悩みを解消して喜んでもらうことだと思っています。ただ、一人で届けられる範囲には限りがある。だからその手段として、仲間と事業の形にしていきます。</p>
+      </div>
+      <div class="tl-i rv">
+        <div class="tl-st">卒業後 ／ その先へ</div>
+        <h3>長く続けられる事業にする</h3>
+        <p>使命感というより、動いているうちに出会って「面白い」と思えた挑戦です。去年、20万円の起業支援コンサルに勧誘されました。サッカーなら経験者が技術や進み方を教えてくれる環境が身近にあるのに、起業したい子どもにはそれがなく、独力で目指すしかない。そのハードルの高さで夢を諦める子がいると思うと、悔しさと憤りがあります。この悩みを解消するノウハウを、より多くの人に届けられる事業を、長く続けたいです。</p>
+      </div>
+    </div>
+
+    <div class="closing rv">
+      <p>退屈だと思ったら、<br>また<span class="rl">何か作る</span>。<br>それを、続けます。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  このサイトは武蔵野大学 総合型選抜Ⅰ期 出願書類の補足として、本人が制作したものです。<br>
+  掲載している数値・経緯は、すべて実際の活動記録に基づいています。
+</footer>
+
+<script>
+  // ヒーロー動画：videos/intro.mp4 があれば差し込み、無ければプレースホルダーのまま
+  (function(){
+    var v = document.getElementById('heroVideo');
+    var ph = document.getElementById('heroPlaceholder');
+    var cap = document.getElementById('videoCaption');
+    cap.style.visibility = 'hidden';
+    fetch('videos/intro.mp4', { method:'HEAD' }).then(function(res){
+      if(res.ok){
+        var s = document.createElement('source');
+        s.src = 'videos/intro.mp4'; s.type = 'video/mp4';
+        v.appendChild(s);
+        v.style.display = 'block';
+        ph.style.display = 'none';
+        cap.style.visibility = 'visible';
+      }
+    }).catch(function(){});
+  })();
+
+  // スクロールで順に立ち上げる
+  // ※勢いよくスクロールして一気に通り過ぎた要素も必ず表示されるよう、
+  //   交差判定ではなく毎回の走査で「画面下端より上に来たもの」を出す
+  (function(){
+    var els = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+    var showAll = function(){ els.forEach(function(el){ el.classList.add('in'); }); els = []; };
+
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      showAll(); return;
+    }
+
+    var ticking = false;
+    function sweep(){
+      ticking = false;
+      els = els.filter(function(el){
+        if(el.getBoundingClientRect().top < window.innerHeight * 0.92){
+          el.classList.add('in');
+          return false;
+        }
+        return true;
+      });
+      if(!els.length){
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      }
+    }
+    function onScroll(){
+      if(!ticking){ ticking = true; requestAnimationFrame(sweep); }
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    sweep();
+  })();
+</script>
+
+</body>
+</html>
