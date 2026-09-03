@@ -591,6 +591,35 @@
     font-size: 14px;
   }
 
+  .manual-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sign-toggle {
+    appearance: none;
+    flex: none;
+    cursor: pointer;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s, color 0.15s, transform 0.1s;
+  }
+
+  .sign-toggle:active { transform: scale(0.94); }
+  .sign-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .sign-toggle.pos { background: var(--win-bg); color: var(--win); }
+  .sign-toggle.neg { background: var(--lose-bg); color: var(--lose); }
+
   .manual-field {
     display: flex;
     align-items: center;
@@ -779,7 +808,7 @@
 
   <div class="section">
     <p class="section-title">未記録分(このアプリを使う前)<span class="rule"></span></p>
-    <p class="section-hint">記録せずに何セットかプレイした分は、最終的なプラマイ(円)をここに直接入力してください。負けていたら -500 のようにマイナスで。総合精算に足されます。</p>
+    <p class="section-hint">記録せずに何セットかプレイした分は、最終的なプラマイ(円)をここに入力してください。左の＋／－ボタンで勝ち負けを切り替えてから金額を入力。総合精算に足されます。</p>
     <div class="manual-grid" id="manualGrid"></div>
   </div>
 
@@ -1058,28 +1087,51 @@
 
   /* ---------- manual (untracked) entries ---------- */
 
+  // Mobile numeric keypads (inputmode="numeric") usually have no "-" key,
+  // so sign is a separate ± toggle button and the number field only ever
+  // holds a non-negative magnitude.
+  var manualSign = {};
+
   function buildManualRows() {
     var grid = document.getElementById('manualGrid');
     grid.innerHTML = '';
     PLAYER_INFO.forEach(function (info) {
       var name = info.name;
+      manualSign[name] = state.manual[name] < 0 ? -1 : 1;
+      var magnitude = Math.abs(state.manual[name]);
+
       var row = document.createElement('div');
       row.className = 'manual-row';
       row.innerHTML =
         '<span class="manual-name">' + name + '</span>' +
-        '<div class="manual-field">' +
-          '<span class="yen-sign">¥</span>' +
-          '<input id="manual-' + name + '" type="number" inputmode="numeric" step="1" value="' + state.manual[name] + '">' +
+        '<div class="manual-controls">' +
+          '<button type="button" class="sign-toggle ' + (manualSign[name] > 0 ? 'pos' : 'neg') + '" id="sign-' + name + '" aria-label="' + name + 'の勝ち負けを切り替え">' + (manualSign[name] > 0 ? '+' : '−') + '</button>' +
+          '<div class="manual-field">' +
+            '<span class="yen-sign">¥</span>' +
+            '<input id="manual-' + name + '" type="number" inputmode="numeric" step="1" min="0" value="' + magnitude + '">' +
+          '</div>' +
         '</div>';
 
       var input = row.querySelector('input');
-      // Same rule as the round inputs: never rebuild this grid from an
-      // input handler, or focus (and the mobile keyboard) drops.
-      input.addEventListener('input', function () {
+      var toggleBtn = row.querySelector('.sign-toggle');
+
+      function applyValue() {
         var v = parseInt(input.value, 10);
-        state.manual[name] = isNaN(v) ? 0 : v;
+        var mag = isNaN(v) ? 0 : Math.abs(v);
+        state.manual[name] = mag * manualSign[name];
         saveState();
         updateTotals();
+      }
+
+      // Same rule as the round inputs: never rebuild this grid from an
+      // input handler, or focus (and the mobile keyboard) drops.
+      input.addEventListener('input', applyValue);
+
+      toggleBtn.addEventListener('click', function () {
+        manualSign[name] *= -1;
+        toggleBtn.className = 'sign-toggle ' + (manualSign[name] > 0 ? 'pos' : 'neg');
+        toggleBtn.textContent = manualSign[name] > 0 ? '+' : '−';
+        applyValue();
       });
 
       grid.appendChild(row);
