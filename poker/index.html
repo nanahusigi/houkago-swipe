@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="しゅんき・げんた・おぐら・おざわの4人ホームゲーム用、掛け金精算ツール">
+<meta name="description" content="しゅんき・げんた・おぐら・おざわの4人ホームゲーム用、掛け金精算ツール(複数セット対応)">
 <title>ポーカー精算</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
@@ -107,10 +107,6 @@
     font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-  }
-
-  .display {
-    font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   }
 
   .mono {
@@ -282,10 +278,9 @@
     padding-top: 14px;
   }
 
-  .buyin-label {
-    font-size: 12.5px;
-    color: var(--on-felt-soft);
-  }
+  .buyin-label { font-size: 12.5px; color: var(--on-felt-soft); }
+
+  .buyin-value-wrap { text-align: right; }
 
   .buyin-value {
     font-family: 'Space Mono', monospace;
@@ -296,11 +291,17 @@
 
   .buyin-value .unit { font-size: 13px; font-weight: 400; color: var(--on-felt-soft); margin-left: 2px; }
 
+  .buyin-note {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10.5px;
+    color: var(--on-felt-soft);
+    margin-top: 1px;
+  }
+
   /* ---------- section labels ---------- */
 
-  .section {
-    padding: 22px 20px 0;
-  }
+  .section { padding: 22px 20px 0; }
 
   .section-title {
     font-family: 'Zen Kaku Gothic New', sans-serif;
@@ -308,16 +309,18 @@
     font-size: 13px;
     letter-spacing: 0.04em;
     color: var(--ink-soft);
-    margin: 0 0 12px;
+    margin: 0 0 4px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .section-title .rule {
-    flex: 1;
-    height: 1px;
-    background: var(--border-strong);
+  .section-title .rule { flex: 1; height: 1px; background: var(--border-strong); }
+
+  .section-hint {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin: 0 0 12px;
   }
 
   /* ---------- player cards ---------- */
@@ -340,7 +343,7 @@
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .player-head {
@@ -369,14 +372,6 @@
   }
 
   .card-index.red { color: var(--gold-strong); border-color: var(--gold-bg); }
-
-  .player-buyin {
-    font-size: 11.5px;
-    color: var(--ink-faint);
-    margin-top: -6px;
-  }
-
-  .player-buyin .mono { color: var(--ink-soft); }
 
   .final-field {
     display: flex;
@@ -413,9 +408,14 @@
   }
 
   .final-field input:focus { outline: none; }
+  .final-field:focus-within { border-color: var(--gold); }
 
-  .final-field:focus-within {
-    border-color: var(--gold);
+  .live-yen {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: right;
+    min-height: 14px;
   }
 
   .net-pill {
@@ -431,6 +431,165 @@
   .net-pill.win { background: var(--win-bg); color: var(--win); }
   .net-pill.lose { background: var(--lose-bg); color: var(--lose); }
   .net-pill.even { background: var(--border); color: var(--ink-soft); }
+
+  /* ---------- current-round footer / next-round ---------- */
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .check-line {
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .check-line.ok { color: var(--ink-soft); }
+  .check-line.warn { color: var(--lose); }
+
+  .check-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+  }
+
+  .reset-btn {
+    appearance: none;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .reset-btn:hover { border-color: var(--gold); color: var(--gold-strong); }
+  .reset-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .next-round-btn {
+    appearance: none;
+    width: 100%;
+    margin-top: 14px;
+    border: none;
+    background: var(--gold);
+    color: var(--felt);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    padding: 12px 16px;
+    border-radius: 11px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: filter 0.15s, transform 0.1s;
+  }
+
+  .next-round-btn:hover { filter: brightness(1.06); }
+  .next-round-btn:active { transform: translateY(1px); }
+  .next-round-btn:focus-visible { outline: 2px solid var(--gold-strong); outline-offset: 2px; }
+
+  /* ---------- round history ---------- */
+
+  .round-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .round-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px 11px;
+    box-shadow: var(--shadow);
+  }
+
+  .round-head { display: flex; align-items: center; gap: 8px; }
+
+  .round-label {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+
+  .round-mult {
+    font-family: 'Space Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    background: var(--paper);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 1px 6px;
+  }
+
+  .round-del {
+    margin-left: auto;
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 4px 7px;
+    border-radius: 6px;
+    transition: background-color 0.15s, color 0.15s;
+  }
+
+  .round-del:hover { color: var(--lose); background: var(--lose-bg); }
+  .round-del:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+  .round-nets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+    margin-top: 7px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11.5px;
+  }
+
+  .round-nets span.win { color: var(--win); }
+  .round-nets span.lose { color: var(--lose); }
+  .round-nets span.even { color: var(--ink-faint); }
+
+  .round-warn {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--lose);
+  }
+
+  /* ---------- total ---------- */
+
+  .total-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .total-row-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 13px;
+    box-shadow: var(--shadow);
+  }
+
+  .total-name {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
 
   /* ---------- settlement ticket ---------- */
 
@@ -475,10 +634,7 @@
   .transfer-name.from { color: var(--lose); }
   .transfer-name.to { color: var(--win); }
 
-  .transfer-arrow {
-    color: var(--gold);
-    font-size: 15px;
-  }
+  .transfer-arrow { color: var(--gold); font-size: 15px; }
 
   .transfer-amount {
     margin-left: auto;
@@ -495,57 +651,29 @@
     padding: 6px 0;
   }
 
-  /* ---------- footer / check + reset ---------- */
-
-  .footer-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 14px;
-  }
-
-  .check-line {
-    font-size: 12px;
-    color: var(--ink-faint);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .check-line.ok { color: var(--ink-soft); }
-  .check-line.warn { color: var(--lose); }
-
-  .check-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex: none;
-  }
-
-  .reset-btn {
-    appearance: none;
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    color: var(--ink-soft);
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12.5px;
-    padding: 7px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
-  .reset-btn:hover { border-color: var(--gold); color: var(--gold-strong); }
-  .reset-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
   .foot-note {
-    padding: 20px 20px 0;
+    padding: 22px 20px 0;
     font-size: 11.5px;
     color: var(--ink-faint);
     text-align: center;
   }
+
+  .reset-all-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .reset-all-btn:hover { color: var(--lose); }
+
+  [hidden] { display: none !important; }
 </style>
 
 <div class="page">
@@ -567,28 +695,48 @@
 
       <div class="buyin-line">
         <span class="buyin-label">1人あたりの元本</span>
-        <span class="buyin-value mono" id="buyinValue">¥225<span class="unit">/人</span></span>
+        <span class="buyin-value-wrap">
+          <span class="buyin-value mono" id="buyinValue">¥225<span class="unit">/人</span></span>
+          <span class="buyin-note" id="buyinNote"></span>
+        </span>
       </div>
     </div>
   </div>
 
   <div class="section">
-    <p class="section-title">最終持ち点<span class="rule"></span></p>
+    <p class="section-title">今セットの最終持ち点<span class="rule"></span></p>
+    <p class="section-hint">「最終」は×1のときの点数で入力。倍率をかけた実際の金額は自動で計算されます。</p>
     <div class="players-grid" id="playersGrid"></div>
+
+    <div class="footer-row">
+      <span class="check-line" id="checkLine"></span>
+      <button class="reset-btn" id="resetCurrentBtn" type="button">このセットを225にリセット</button>
+    </div>
+
+    <button class="next-round-btn" id="nextRoundBtn" type="button">このセットを保存して次のセットへ →</button>
+  </div>
+
+  <div class="section" id="roundHistorySection" hidden>
+    <p class="section-title">セット履歴<span class="rule"></span></p>
+    <div class="round-list" id="roundList"></div>
   </div>
 
   <div class="section">
-    <p class="section-title">精算<span class="rule"></span></p>
+    <p class="section-title">総合精算<span class="rule"></span></p>
+    <p class="section-hint" id="roundCountNote">1セット分の合計</p>
+
+    <div class="total-grid" id="totalGrid"></div>
+
     <div class="ticket">
-      <div id="transferList"></div>
+      <div id="totalTransferList"></div>
       <div class="footer-row">
-        <span class="check-line" id="checkLine"></span>
-        <button class="reset-btn" id="resetBtn" type="button">元本にリセット</button>
+        <span class="check-line" id="totalCheckLine"></span>
+        <button class="reset-all-btn" id="resetAllBtn" type="button">全セットを消去</button>
       </div>
     </div>
   </div>
 
-  <p class="foot-note">倍率を変えると全員の最終持ち点が新しい元本にリセットされます</p>
+  <p class="foot-note">1セット終えるごとに「次のセットへ」で保存すると、総合精算にまとまります</p>
 </div>
 
 <script>
@@ -602,38 +750,50 @@
   var PLAYERS = PLAYER_INFO.map(function (p) { return p.name; });
   var RED_SUITS = { '♥': true, '♦': true };
   var BASE = 225;
-  var STORAGE_KEY = 'poker-seisan-state-v1';
+  var MULTIPLIERS = [1, 2, 3, 4, 5];
+  var STORAGE_KEY = 'poker-seisan-state-v2';
+
+  function defaultRound(mult) {
+    var finals = {};
+    PLAYERS.forEach(function (p) { finals[p] = BASE; });
+    return { multiplier: MULTIPLIERS.indexOf(mult) >= 0 ? mult : 1, finals: finals };
+  }
+
+  function sanitizeRound(r) {
+    var mult = MULTIPLIERS.indexOf(r && r.multiplier) >= 0 ? r.multiplier : 1;
+    var finals = {};
+    PLAYERS.forEach(function (p) {
+      var v = r && r.finals ? r.finals[p] : undefined;
+      finals[p] = (typeof v === 'number' && !isNaN(v)) ? v : BASE;
+    });
+    return { multiplier: mult, finals: finals };
+  }
 
   function loadState() {
-    var fallback = { multiplier: 1, finals: {} };
-    PLAYERS.forEach(function (p) { fallback.finals[p] = BASE; });
+    var fallback = { rounds: [], current: defaultRound(1) };
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return fallback;
       var parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== 'object') return fallback;
-      if (![1, 2, 3, 4, 5].includes(parsed.multiplier)) parsed.multiplier = 1;
-      if (!parsed.finals || typeof parsed.finals !== 'object') parsed.finals = fallback.finals;
-      PLAYERS.forEach(function (p) {
-        if (typeof parsed.finals[p] !== 'number' || isNaN(parsed.finals[p])) {
-          parsed.finals[p] = BASE * parsed.multiplier;
-        }
-      });
-      return parsed;
+      var rounds = Array.isArray(parsed.rounds) ? parsed.rounds.map(sanitizeRound) : [];
+      var current = sanitizeRound(parsed.current);
+      return { rounds: rounds, current: current };
     } catch (e) {
       return fallback;
     }
   }
 
-  function saveState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* ignore — private mode etc. */ }
-  }
-
   var state = loadState();
 
-  function buyIn() { return BASE * state.multiplier; }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* private mode etc. */ }
+  }
+
+  function actualBuyIn(mult) { return BASE * mult; }
+  function netOf(round, name) { return (round.finals[name] - BASE) * round.multiplier; }
+  function baseSum(round) { return PLAYERS.reduce(function (s, p) { return s + round.finals[p]; }, 0); }
+  function pillClass(n) { return n > 0 ? 'win' : n < 0 ? 'lose' : 'even'; }
 
   function fmtYen(n) {
     var sign = n < 0 ? '-' : '';
@@ -641,92 +801,17 @@
   }
 
   function fmtSigned(n) {
-    if (n > 0) return '+¥' + n.toLocaleString('ja-JP');
-    if (n < 0) return '-¥' + Math.abs(n).toLocaleString('ja-JP');
+    var r = Math.round(n);
+    if (r > 0) return '+¥' + r.toLocaleString('ja-JP');
+    if (r < 0) return '-¥' + Math.abs(r).toLocaleString('ja-JP');
     return '¥0';
   }
 
-  function renderMultRow() {
-    var row = document.getElementById('multRow');
-    row.innerHTML = '';
-    [1, 2, 3, 4, 5].forEach(function (m) {
-      var active = state.multiplier === m;
-      var col = document.createElement('div');
-      col.className = 'mult-col' + (active ? ' active' : '');
-
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'chip-btn' + (active ? ' active' : '');
-      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-      btn.setAttribute('aria-label', '掛け金 ×' + m);
-      btn.innerHTML = '<span class="chip-face">×' + m + '</span>';
-      btn.addEventListener('click', function () {
-        if (state.multiplier === m) return;
-        state.multiplier = m;
-        PLAYERS.forEach(function (p) { state.finals[p] = BASE * m; });
-        saveState();
-        renderAll();
-      });
-
-      var yen = document.createElement('span');
-      yen.className = 'chip-yen';
-      yen.textContent = '¥' + (BASE * m).toLocaleString('ja-JP');
-
-      col.appendChild(btn);
-      col.appendChild(yen);
-      row.appendChild(col);
-    });
-  }
-
-  function renderBuyin() {
-    document.getElementById('buyinValue').innerHTML = fmtYen(buyIn()) + '<span class="unit">/人</span>';
-  }
-
-  function renderPlayers() {
-    var grid = document.getElementById('playersGrid');
-    grid.innerHTML = '';
-    PLAYER_INFO.forEach(function (info) {
-      var name = info.name;
-      var net = state.finals[name] - buyIn();
-      var pillClass = net > 0 ? 'win' : net < 0 ? 'lose' : 'even';
-      var indexClass = RED_SUITS[info.suit] ? 'card-index red' : 'card-index';
-
-      var card = document.createElement('div');
-      card.className = 'player-card';
-      card.innerHTML =
-        '<div class="player-head">' +
-          '<div class="player-name">' + name + '</div>' +
-          '<div class="' + indexClass + '">' + info.rank + info.suit + '</div>' +
-        '</div>' +
-        '<div class="player-buyin">元本 <span class="mono">' + fmtYen(buyIn()) + '</span></div>' +
-        '<div class="final-field">' +
-          '<label for="final-' + name + '">最終</label>' +
-          '<span class="yen-sign">¥</span>' +
-          '<input id="final-' + name + '" type="number" inputmode="numeric" step="1" value="' + state.finals[name] + '">' +
-        '</div>' +
-        '<div class="net-pill ' + pillClass + '">' + fmtSigned(net) + '</div>';
-
-      var input = card.querySelector('input');
-      input.addEventListener('input', function () {
-        var v = parseInt(input.value, 10);
-        state.finals[name] = isNaN(v) ? 0 : v;
-        saveState();
-        renderPlayers();
-        renderSettlement();
-      });
-
-      grid.appendChild(card);
-    });
-  }
-
-  function computeSettlements() {
-    var nets = PLAYERS.map(function (name) {
-      return { name: name, amount: state.finals[name] - buyIn() };
-    });
-    var creditors = nets.filter(function (n) { return n.amount > 0; })
+  function computeSettlement(nets) {
+    var creditors = nets.filter(function (n) { return n.amount > 0.5; })
       .map(function (n) { return { name: n.name, amount: n.amount }; })
       .sort(function (a, b) { return b.amount - a.amount; });
-    var debtors = nets.filter(function (n) { return n.amount < 0; })
+    var debtors = nets.filter(function (n) { return n.amount < -0.5; })
       .map(function (n) { return { name: n.name, amount: -n.amount }; })
       .sort(function (a, b) { return b.amount - a.amount; });
 
@@ -740,21 +825,193 @@
       if (debtors[i].amount <= 0.5) i++;
       if (creditors[j].amount <= 0.5) j++;
     }
-    return { transfers: result, nets: nets };
+    return result;
   }
 
-  function renderSettlement() {
-    var res = computeSettlements();
-    var list = document.getElementById('transferList');
+  /* ---------- current round: multiplier chips ---------- */
+
+  function renderMultRow() {
+    var row = document.getElementById('multRow');
+    row.innerHTML = '';
+    MULTIPLIERS.forEach(function (m) {
+      var active = state.current.multiplier === m;
+      var col = document.createElement('div');
+      col.className = 'mult-col' + (active ? ' active' : '');
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-btn' + (active ? ' active' : '');
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.setAttribute('aria-label', '掛け金 ×' + m);
+      btn.innerHTML = '<span class="chip-face">×' + m + '</span>';
+      btn.addEventListener('click', function () { onMultiplierChange(m); });
+
+      var yen = document.createElement('span');
+      yen.className = 'chip-yen';
+      yen.textContent = '¥' + actualBuyIn(m).toLocaleString('ja-JP');
+
+      col.appendChild(btn);
+      col.appendChild(yen);
+      row.appendChild(col);
+    });
+  }
+
+  function onMultiplierChange(m) {
+    if (state.current.multiplier === m) return;
+    state.current.multiplier = m;
+    saveState();
+    renderMultRow();
+    updateBuyin();
+    PLAYERS.forEach(updateCardDynamic);
+    updateCurrentCheck();
+    updateTotals();
+  }
+
+  function updateBuyin() {
+    var mult = state.current.multiplier;
+    document.getElementById('buyinValue').innerHTML = fmtYen(actualBuyIn(mult)) + '<span class="unit">/人</span>';
+    document.getElementById('buyinNote').textContent = mult > 1 ? ('¥' + BASE.toLocaleString('ja-JP') + ' × ' + mult) : '';
+  }
+
+  /* ---------- current round: player cards (built once, updated in place) ---------- */
+
+  function buildPlayerCards() {
+    var grid = document.getElementById('playersGrid');
+    grid.innerHTML = '';
+    PLAYER_INFO.forEach(function (info) {
+      var name = info.name;
+      var indexClass = RED_SUITS[info.suit] ? 'card-index red' : 'card-index';
+
+      var card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML =
+        '<div class="player-head">' +
+          '<div class="player-name">' + name + '</div>' +
+          '<div class="' + indexClass + '">' + info.rank + info.suit + '</div>' +
+        '</div>' +
+        '<div class="final-field">' +
+          '<label for="final-' + name + '">最終(×1)</label>' +
+          '<span class="yen-sign">¥</span>' +
+          '<input id="final-' + name + '" type="number" inputmode="numeric" step="1" value="' + state.current.finals[name] + '">' +
+        '</div>' +
+        '<div class="live-yen" id="live-' + name + '"></div>' +
+        '<div class="net-pill" id="netpill-' + name + '"></div>';
+
+      var input = card.querySelector('input');
+      // Only ever mutate state + this player's own small spans on input —
+      // never rebuild the grid here, or the input loses focus and the
+      // on-screen keyboard closes after every digit.
+      input.addEventListener('input', function () {
+        var v = parseInt(input.value, 10);
+        state.current.finals[name] = isNaN(v) ? 0 : v;
+        saveState();
+        updateCardDynamic(name);
+        updateCurrentCheck();
+        updateTotals();
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  function updateCardDynamic(name) {
+    var mult = state.current.multiplier;
+    var baseVal = state.current.finals[name];
+    var actual = baseVal * mult;
+
+    var live = document.getElementById('live-' + name);
+    live.textContent = mult > 1
+      ? ('¥' + baseVal.toLocaleString('ja-JP') + ' × ' + mult + ' = ' + fmtYen(actual))
+      : '';
+
+    var net = (baseVal - BASE) * mult;
+    var pill = document.getElementById('netpill-' + name);
+    pill.className = 'net-pill ' + pillClass(net);
+    pill.textContent = fmtSigned(net);
+  }
+
+  function updateCurrentCheck() {
+    var diffBase = baseSum(state.current) - BASE * PLAYERS.length;
+    var el = document.getElementById('checkLine');
+    if (diffBase === 0) {
+      el.className = 'check-line ok';
+      el.innerHTML = '<span class="check-dot"></span>このセットの合計が場の金額と一致';
+    } else {
+      el.className = 'check-line warn';
+      el.innerHTML = '<span class="check-dot"></span>このセットの合計が ' + fmtYen(Math.abs(diffBase) * state.current.multiplier) + ' 合いません';
+    }
+  }
+
+  /* ---------- round history ---------- */
+
+  function renderRoundHistory() {
+    var section = document.getElementById('roundHistorySection');
+    var list = document.getElementById('roundList');
+    if (state.rounds.length === 0) {
+      section.hidden = true;
+      list.innerHTML = '';
+      return;
+    }
+    section.hidden = false;
     list.innerHTML = '';
 
-    if (res.transfers.length === 0) {
-      var empty = document.createElement('div');
-      empty.className = 'no-transfer';
-      empty.textContent = '精算の必要はありません';
-      list.appendChild(empty);
+    state.rounds.forEach(function (round, idx) {
+      var mismatch = baseSum(round) !== BASE * PLAYERS.length;
+      var netsHtml = PLAYER_INFO.map(function (info) {
+        var n = netOf(round, info.name);
+        return '<span class="' + pillClass(n) + '">' + info.name + ' ' + fmtSigned(n) + '</span>';
+      }).join('');
+
+      var row = document.createElement('div');
+      row.className = 'round-row';
+      row.innerHTML =
+        '<div class="round-head">' +
+          '<span class="round-label">セット' + (idx + 1) + '</span>' +
+          '<span class="round-mult">×' + round.multiplier + '</span>' +
+          '<button class="round-del" type="button" data-idx="' + idx + '" aria-label="セット' + (idx + 1) + 'を削除">✕</button>' +
+        '</div>' +
+        '<div class="round-nets">' + netsHtml + '</div>' +
+        (mismatch ? '<div class="round-warn">⚠ 合計が場の金額と合っていません</div>' : '');
+
+      row.querySelector('.round-del').addEventListener('click', function () {
+        state.rounds.splice(idx, 1);
+        saveState();
+        renderRoundHistory();
+        updateTotals();
+      });
+
+      list.appendChild(row);
+    });
+  }
+
+  /* ---------- grand total ---------- */
+
+  function updateTotals() {
+    var allRounds = state.rounds.concat([state.current]);
+    var totals = PLAYERS.map(function (name) {
+      var sum = 0;
+      allRounds.forEach(function (r) { sum += netOf(r, name); });
+      return { name: name, amount: sum };
+    });
+
+    var totalGrid = document.getElementById('totalGrid');
+    totalGrid.innerHTML = '';
+    totals.forEach(function (t) {
+      var row = document.createElement('div');
+      row.className = 'total-row-item';
+      row.innerHTML =
+        '<span class="total-name">' + t.name + '</span>' +
+        '<span class="net-pill ' + pillClass(t.amount) + '">' + fmtSigned(t.amount) + '</span>';
+      totalGrid.appendChild(row);
+    });
+
+    var transfers = computeSettlement(totals);
+    var settleWrap = document.getElementById('totalTransferList');
+    settleWrap.innerHTML = '';
+    if (transfers.length === 0) {
+      settleWrap.innerHTML = '<div class="no-transfer">精算の必要はありません</div>';
     } else {
-      res.transfers.forEach(function (t) {
+      transfers.forEach(function (t) {
         var row = document.createElement('div');
         row.className = 'transfer-row';
         row.innerHTML =
@@ -762,38 +1019,73 @@
           '<span class="transfer-arrow">→</span>' +
           '<span class="transfer-name to">' + t.to + '</span>' +
           '<span class="transfer-amount mono">' + fmtYen(t.amount) + '</span>';
-        list.appendChild(row);
+        settleWrap.appendChild(row);
       });
     }
 
-    var totalFinal = PLAYERS.reduce(function (s, p) { return s + (state.finals[p] || 0); }, 0);
-    var totalPot = buyIn() * PLAYERS.length;
-    var diff = totalFinal - totalPot;
-    var checkEl = document.getElementById('checkLine');
-    if (diff === 0) {
+    var totalSum = totals.reduce(function (s, t) { return s + t.amount; }, 0);
+    var checkEl = document.getElementById('totalCheckLine');
+    if (Math.round(totalSum) === 0) {
       checkEl.className = 'check-line ok';
-      checkEl.innerHTML = '<span class="check-dot"></span>合計 ' + fmtYen(totalFinal) + ' で場の金額と一致';
+      checkEl.innerHTML = '<span class="check-dot"></span>全' + allRounds.length + 'セットの合計が一致';
     } else {
       checkEl.className = 'check-line warn';
-      checkEl.innerHTML = '<span class="check-dot"></span>場の合計と ' + fmtYen(Math.abs(diff)) + ' 合いません';
+      checkEl.innerHTML = '<span class="check-dot"></span>合計が ' + fmtYen(Math.abs(totalSum)) + ' 合いません(セット履歴を確認)';
     }
+
+    document.getElementById('roundCountNote').textContent = allRounds.length + 'セット分の合計';
   }
 
-  function renderAll() {
-    renderMultRow();
-    renderBuyin();
-    renderPlayers();
-    renderSettlement();
-  }
+  /* ---------- buttons ---------- */
 
-  document.getElementById('resetBtn').addEventListener('click', function () {
-    PLAYERS.forEach(function (p) { state.finals[p] = buyIn(); });
+  document.getElementById('resetCurrentBtn').addEventListener('click', function () {
+    PLAYERS.forEach(function (p) { state.current.finals[p] = BASE; });
     saveState();
-    renderPlayers();
-    renderSettlement();
+    PLAYERS.forEach(function (name) {
+      document.getElementById('final-' + name).value = BASE;
+      updateCardDynamic(name);
+    });
+    updateCurrentCheck();
+    updateTotals();
   });
 
-  renderAll();
+  document.getElementById('nextRoundBtn').addEventListener('click', function () {
+    state.rounds.push(sanitizeRound(state.current));
+    state.current = defaultRound(state.current.multiplier);
+    saveState();
+
+    buildPlayerCards();
+    renderMultRow();
+    updateBuyin();
+    PLAYERS.forEach(updateCardDynamic);
+    updateCurrentCheck();
+    renderRoundHistory();
+    updateTotals();
+  });
+
+  document.getElementById('resetAllBtn').addEventListener('click', function () {
+    if (!confirm('全セットの記録を消去します。よろしいですか？')) return;
+    state = { rounds: [], current: defaultRound(1) };
+    saveState();
+
+    renderMultRow();
+    buildPlayerCards();
+    updateBuyin();
+    PLAYERS.forEach(updateCardDynamic);
+    updateCurrentCheck();
+    renderRoundHistory();
+    updateTotals();
+  });
+
+  /* ---------- init ---------- */
+
+  renderMultRow();
+  buildPlayerCards();
+  updateBuyin();
+  PLAYERS.forEach(updateCardDynamic);
+  updateCurrentCheck();
+  renderRoundHistory();
+  updateTotals();
 })();
 </script>
 </body>
