@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="しゅんき・げんた・おぐら・おざわの4人ホームゲーム用、掛け金精算ツール(複数セット対応)">
+<meta name="description" content="しゅんき・げんた・おぐら・おざわの4人ホームゲーム用、掛け金精算ツール(複数セット+未記録分の手動入力対応)">
 <title>ポーカー精算</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
@@ -565,6 +565,62 @@
     color: var(--lose);
   }
 
+  /* ---------- manual (untracked) entries ---------- */
+
+  .manual-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .manual-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .manual-name {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .manual-field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--paper);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+
+  .manual-field .yen-sign {
+    font-family: 'Space Mono', monospace;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  .manual-field input {
+    width: 84px;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .manual-field input:focus { outline: none; }
+  .manual-field:focus-within { border-color: var(--gold); }
+
   /* ---------- total ---------- */
 
   .total-grid {
@@ -722,6 +778,12 @@
   </div>
 
   <div class="section">
+    <p class="section-title">未記録分(このアプリを使う前)<span class="rule"></span></p>
+    <p class="section-hint">記録せずに何セットかプレイした分は、最終的なプラマイ(円)をここに直接入力してください。負けていたら -500 のようにマイナスで。総合精算に足されます。</p>
+    <div class="manual-grid" id="manualGrid"></div>
+  </div>
+
+  <div class="section">
     <p class="section-title">総合精算<span class="rule"></span></p>
     <p class="section-hint" id="roundCountNote">1セット分の合計</p>
 
@@ -769,8 +831,17 @@
     return { multiplier: mult, finals: finals };
   }
 
+  function sanitizeManual(m) {
+    var out = {};
+    PLAYERS.forEach(function (p) {
+      var v = m ? m[p] : undefined;
+      out[p] = (typeof v === 'number' && !isNaN(v)) ? v : 0;
+    });
+    return out;
+  }
+
   function loadState() {
-    var fallback = { rounds: [], current: defaultRound(1) };
+    var fallback = { rounds: [], current: defaultRound(1), manual: sanitizeManual(null) };
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return fallback;
@@ -778,7 +849,8 @@
       if (!parsed || typeof parsed !== 'object') return fallback;
       var rounds = Array.isArray(parsed.rounds) ? parsed.rounds.map(sanitizeRound) : [];
       var current = sanitizeRound(parsed.current);
-      return { rounds: rounds, current: current };
+      var manual = sanitizeManual(parsed.manual);
+      return { rounds: rounds, current: current, manual: manual };
     } catch (e) {
       return fallback;
     }
@@ -984,6 +1056,36 @@
     });
   }
 
+  /* ---------- manual (untracked) entries ---------- */
+
+  function buildManualRows() {
+    var grid = document.getElementById('manualGrid');
+    grid.innerHTML = '';
+    PLAYER_INFO.forEach(function (info) {
+      var name = info.name;
+      var row = document.createElement('div');
+      row.className = 'manual-row';
+      row.innerHTML =
+        '<span class="manual-name">' + name + '</span>' +
+        '<div class="manual-field">' +
+          '<span class="yen-sign">¥</span>' +
+          '<input id="manual-' + name + '" type="number" inputmode="numeric" step="1" value="' + state.manual[name] + '">' +
+        '</div>';
+
+      var input = row.querySelector('input');
+      // Same rule as the round inputs: never rebuild this grid from an
+      // input handler, or focus (and the mobile keyboard) drops.
+      input.addEventListener('input', function () {
+        var v = parseInt(input.value, 10);
+        state.manual[name] = isNaN(v) ? 0 : v;
+        saveState();
+        updateTotals();
+      });
+
+      grid.appendChild(row);
+    });
+  }
+
   /* ---------- grand total ---------- */
 
   function updateTotals() {
@@ -991,6 +1093,7 @@
     var totals = PLAYERS.map(function (name) {
       var sum = 0;
       allRounds.forEach(function (r) { sum += netOf(r, name); });
+      sum += state.manual[name];
       return { name: name, amount: sum };
     });
 
@@ -1023,17 +1126,19 @@
       });
     }
 
+    var hasManual = PLAYERS.some(function (p) { return state.manual[p] !== 0; });
     var totalSum = totals.reduce(function (s, t) { return s + t.amount; }, 0);
     var checkEl = document.getElementById('totalCheckLine');
     if (Math.round(totalSum) === 0) {
       checkEl.className = 'check-line ok';
-      checkEl.innerHTML = '<span class="check-dot"></span>全' + allRounds.length + 'セットの合計が一致';
+      checkEl.innerHTML = '<span class="check-dot"></span>全' + allRounds.length + 'セット' + (hasManual ? ' + 未記録分' : '') + 'の合計が一致';
     } else {
       checkEl.className = 'check-line warn';
-      checkEl.innerHTML = '<span class="check-dot"></span>合計が ' + fmtYen(Math.abs(totalSum)) + ' 合いません(セット履歴を確認)';
+      checkEl.innerHTML = '<span class="check-dot"></span>合計が ' + fmtYen(Math.abs(totalSum)) + ' 合いません(セット履歴・未記録分を確認)';
     }
 
-    document.getElementById('roundCountNote').textContent = allRounds.length + 'セット分の合計';
+    document.getElementById('roundCountNote').textContent =
+      allRounds.length + 'セット分' + (hasManual ? ' + 未記録分' : '') + 'の合計';
   }
 
   /* ---------- buttons ---------- */
@@ -1064,8 +1169,8 @@
   });
 
   document.getElementById('resetAllBtn').addEventListener('click', function () {
-    if (!confirm('全セットの記録を消去します。よろしいですか？')) return;
-    state = { rounds: [], current: defaultRound(1) };
+    if (!confirm('全セット・未記録分の記録を消去します。よろしいですか？')) return;
+    state = { rounds: [], current: defaultRound(1), manual: sanitizeManual(null) };
     saveState();
 
     renderMultRow();
@@ -1074,6 +1179,7 @@
     PLAYERS.forEach(updateCardDynamic);
     updateCurrentCheck();
     renderRoundHistory();
+    buildManualRows();
     updateTotals();
   });
 
@@ -1085,6 +1191,7 @@
   PLAYERS.forEach(updateCardDynamic);
   updateCurrentCheck();
   renderRoundHistory();
+  buildManualRows();
   updateTotals();
 })();
 </script>
