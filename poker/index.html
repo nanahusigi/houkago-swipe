@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="しゅんき・げんた・おぐら・おざわの4人ホームゲーム用、掛け金精算ツール">
+<title>ポーカー精算</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; }
+  h1, h2, h3, p, ul, ol { margin: 0; }
+  button { font: inherit; color: inherit; }
+</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root {
+    --paper: #F2F6EF;
+    --surface: #FFFFFF;
+    --border: #D9E1D4;
+    --border-strong: #C2CDBC;
+    --ink: #16231D;
+    --ink-soft: #57685D;
+    --ink-faint: #8B9A8F;
+
+    --felt: #0E3B2E;
+    --felt-soft: #144A3A;
+    --on-felt: #F1EDDF;
+    --on-felt-soft: #B9CBBE;
+
+    --gold: #9C7318;
+    --gold-strong: #7C5B12;
+    --gold-bg: #F4E8C8;
+
+    --win: #1C5FA8;
+    --win-bg: #E4EEF9;
+    --lose: #A6332B;
+    --lose-bg: #FAE7E4;
+
+    --shadow: 0 1px 2px rgba(14, 59, 46, 0.08), 0 8px 24px rgba(14, 59, 46, 0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0E1A15;
+      --surface: #142720;
+      --border: #24392F;
+      --border-strong: #34503F;
+      --ink: #EBF2EC;
+      --ink-soft: #A7B9AC;
+      --ink-faint: #728278;
+
+      --felt: #0A2A21;
+      --felt-soft: #123B2E;
+      --on-felt: #F1EDDF;
+      --on-felt-soft: #A9C2B0;
+
+      --gold: #D9AE4E;
+      --gold-strong: #EAC776;
+      --gold-bg: #2E2711;
+
+      --win: #6FA8E0;
+      --win-bg: #17293B;
+      --lose: #E38A80;
+      --lose-bg: #3A1F1C;
+
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0E1A15;
+    --surface: #142720;
+    --border: #24392F;
+    --border-strong: #34503F;
+    --ink: #EBF2EC;
+    --ink-soft: #A7B9AC;
+    --ink-faint: #728278;
+
+    --felt: #0A2A21;
+    --felt-soft: #123B2E;
+    --on-felt: #F1EDDF;
+    --on-felt-soft: #A9C2B0;
+
+    --gold: #D9AE4E;
+    --gold-strong: #EAC776;
+    --gold-bg: #2E2711;
+
+    --win: #6FA8E0;
+    --win-bg: #17293B;
+    --lose: #E38A80;
+    --lose-bg: #3A1F1C;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .display {
+    font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  }
+
+  .mono {
+    font-family: 'Space Mono', 'SF Mono', 'Consolas', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+  }
+
+  /* ---------- header / felt band ---------- */
+
+  .felt-band {
+    position: relative;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 7px),
+      linear-gradient(180deg, var(--felt-soft), var(--felt));
+    color: var(--on-felt);
+    padding: 26px 24px 26px;
+    border-radius: 0 0 22px 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .felt-band::before {
+    content: "♠";
+    position: absolute;
+    right: -18px;
+    top: -34px;
+    font-size: 150px;
+    color: rgba(241, 237, 223, 0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .felt-band::after {
+    content: "♣";
+    position: absolute;
+    left: -20px;
+    bottom: -42px;
+    font-size: 120px;
+    color: rgba(241, 237, 223, 0.045);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .felt-inner { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-felt-soft);
+    font-weight: 500;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .eyebrow .suits { letter-spacing: 0.2em; color: var(--gold); opacity: 0.8; }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 2px;
+  }
+
+  .chip-mark {
+    flex: none;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  }
+
+  .title {
+    font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: 0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .title-sub {
+    font-size: 12.5px;
+    color: var(--on-felt-soft);
+    margin: 0 0 22px;
+  }
+
+  .multiplier-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+
+  .mult-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chip-btn {
+    appearance: none;
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid rgba(241, 237, 223, 0.22);
+    background:
+      radial-gradient(circle at 34% 28%, rgba(255,255,255,0.10), transparent 55%),
+      rgba(241, 237, 223, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+
+  .chip-btn::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(241, 237, 223, 0.32);
+  }
+
+  .chip-btn:hover { background: radial-gradient(circle at 34% 28%, rgba(255,255,255,0.14), transparent 55%), rgba(241, 237, 223, 0.11); }
+  .chip-btn:active { transform: translateY(1px) scale(0.97); }
+
+  .chip-btn:focus-visible {
+    outline: 2px solid var(--gold-strong);
+    outline-offset: 2px;
+  }
+
+  .chip-btn .chip-face {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--on-felt);
+    position: relative;
+    z-index: 1;
+  }
+
+  .chip-yen {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--on-felt-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chip-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .chip-btn.active::before { border-color: rgba(14, 59, 46, 0.35); }
+  .chip-btn.active .chip-face { color: var(--felt); }
+  .mult-col.active .chip-yen { color: var(--gold); font-weight: 700; }
+
+  .buyin-line {
+    margin-top: 18px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-top: 1px solid rgba(241, 237, 223, 0.16);
+    padding-top: 14px;
+  }
+
+  .buyin-label {
+    font-size: 12.5px;
+    color: var(--on-felt-soft);
+  }
+
+  .buyin-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .buyin-value .unit { font-size: 13px; font-weight: 400; color: var(--on-felt-soft); margin-left: 2px; }
+
+  /* ---------- section labels ---------- */
+
+  .section {
+    padding: 22px 20px 0;
+  }
+
+  .section-title {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border-strong);
+  }
+
+  /* ---------- player cards ---------- */
+
+  .players-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 460px) {
+    .players-grid { grid-template-columns: 1fr; }
+  }
+
+  .player-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 14px 13px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .player-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .player-name {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+  }
+
+  .card-index {
+    flex: none;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 3px 6px 4px;
+    color: var(--ink-soft);
+  }
+
+  .card-index.red { color: var(--gold-strong); border-color: var(--gold-bg); }
+
+  .player-buyin {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin-top: -6px;
+  }
+
+  .player-buyin .mono { color: var(--ink-soft); }
+
+  .final-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--paper);
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    padding: 6px 10px;
+  }
+
+  .final-field label {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .final-field .yen-sign {
+    font-family: 'Space Mono', monospace;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .final-field input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .final-field input:focus { outline: none; }
+
+  .final-field:focus-within {
+    border-color: var(--gold);
+  }
+
+  .net-pill {
+    align-self: flex-start;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .net-pill.win { background: var(--win-bg); color: var(--win); }
+  .net-pill.lose { background: var(--lose-bg); color: var(--lose); }
+  .net-pill.even { background: var(--border); color: var(--ink-soft); }
+
+  /* ---------- settlement ticket ---------- */
+
+  .ticket {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .ticket::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background-image: radial-gradient(circle, var(--border-strong) 1.1px, transparent 1.2px);
+    background-size: 9px 1px;
+    background-repeat: repeat-x;
+    background-position: top;
+  }
+
+  .transfer-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .transfer-row:last-child { border-bottom: none; }
+
+  .transfer-name {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .transfer-name.from { color: var(--lose); }
+  .transfer-name.to { color: var(--win); }
+
+  .transfer-arrow {
+    color: var(--gold);
+    font-size: 15px;
+  }
+
+  .transfer-amount {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 14.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .no-transfer {
+    color: var(--ink-faint);
+    font-size: 13.5px;
+    text-align: center;
+    padding: 6px 0;
+  }
+
+  /* ---------- footer / check + reset ---------- */
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .check-line {
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .check-line.ok { color: var(--ink-soft); }
+  .check-line.warn { color: var(--lose); }
+
+  .check-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+  }
+
+  .reset-btn {
+    appearance: none;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .reset-btn:hover { border-color: var(--gold); color: var(--gold-strong); }
+  .reset-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .foot-note {
+    padding: 20px 20px 0;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+</style>
+
+<div class="page">
+  <div class="felt-band">
+    <div class="felt-inner">
+      <p class="eyebrow">HOME GAME 4人卓 <span class="suits">♠ ♥ ♦ ♣</span></p>
+      <div class="title-row">
+        <svg class="chip-mark" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+          <circle cx="15" cy="15" r="13" fill="none" stroke="#F1EDDF" stroke-opacity="0.28" stroke-width="2.5"/>
+          <circle cx="15" cy="15" r="13" fill="none" stroke="#D9AE4E" stroke-opacity="0.9" stroke-width="2.5" stroke-dasharray="3 4.2"/>
+          <circle cx="15" cy="15" r="7.5" fill="#D9AE4E" fill-opacity="0.9"/>
+          <text x="15" y="19" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#0E3B2E">♠</text>
+        </svg>
+        <h1 class="title">ポーカー精算</h1>
+      </div>
+      <p class="title-sub">しゅんき・げんた・おぐら・おざわ</p>
+
+      <div class="multiplier-row" id="multRow"></div>
+
+      <div class="buyin-line">
+        <span class="buyin-label">1人あたりの元本</span>
+        <span class="buyin-value mono" id="buyinValue">¥225<span class="unit">/人</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">最終持ち点<span class="rule"></span></p>
+    <div class="players-grid" id="playersGrid"></div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">精算<span class="rule"></span></p>
+    <div class="ticket">
+      <div id="transferList"></div>
+      <div class="footer-row">
+        <span class="check-line" id="checkLine"></span>
+        <button class="reset-btn" id="resetBtn" type="button">元本にリセット</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot-note">倍率を変えると全員の最終持ち点が新しい元本にリセットされます</p>
+</div>
+
+<script>
+(function () {
+  var PLAYER_INFO = [
+    { name: 'しゅんき', rank: 'A', suit: '♠' },
+    { name: 'げんた', rank: 'K', suit: '♥' },
+    { name: 'おぐら', rank: 'Q', suit: '♦' },
+    { name: 'おざわ', rank: 'J', suit: '♣' }
+  ];
+  var PLAYERS = PLAYER_INFO.map(function (p) { return p.name; });
+  var RED_SUITS = { '♥': true, '♦': true };
+  var BASE = 225;
+  var STORAGE_KEY = 'poker-seisan-state-v1';
+
+  function loadState() {
+    var fallback = { multiplier: 1, finals: {} };
+    PLAYERS.forEach(function (p) { fallback.finals[p] = BASE; });
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return fallback;
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return fallback;
+      if (![1, 2, 3, 4, 5].includes(parsed.multiplier)) parsed.multiplier = 1;
+      if (!parsed.finals || typeof parsed.finals !== 'object') parsed.finals = fallback.finals;
+      PLAYERS.forEach(function (p) {
+        if (typeof parsed.finals[p] !== 'number' || isNaN(parsed.finals[p])) {
+          parsed.finals[p] = BASE * parsed.multiplier;
+        }
+      });
+      return parsed;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { /* ignore — private mode etc. */ }
+  }
+
+  var state = loadState();
+
+  function buyIn() { return BASE * state.multiplier; }
+
+  function fmtYen(n) {
+    var sign = n < 0 ? '-' : '';
+    return sign + '¥' + Math.abs(Math.round(n)).toLocaleString('ja-JP');
+  }
+
+  function fmtSigned(n) {
+    if (n > 0) return '+¥' + n.toLocaleString('ja-JP');
+    if (n < 0) return '-¥' + Math.abs(n).toLocaleString('ja-JP');
+    return '¥0';
+  }
+
+  function renderMultRow() {
+    var row = document.getElementById('multRow');
+    row.innerHTML = '';
+    [1, 2, 3, 4, 5].forEach(function (m) {
+      var active = state.multiplier === m;
+      var col = document.createElement('div');
+      col.className = 'mult-col' + (active ? ' active' : '');
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-btn' + (active ? ' active' : '');
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.setAttribute('aria-label', '掛け金 ×' + m);
+      btn.innerHTML = '<span class="chip-face">×' + m + '</span>';
+      btn.addEventListener('click', function () {
+        if (state.multiplier === m) return;
+        state.multiplier = m;
+        PLAYERS.forEach(function (p) { state.finals[p] = BASE * m; });
+        saveState();
+        renderAll();
+      });
+
+      var yen = document.createElement('span');
+      yen.className = 'chip-yen';
+      yen.textContent = '¥' + (BASE * m).toLocaleString('ja-JP');
+
+      col.appendChild(btn);
+      col.appendChild(yen);
+      row.appendChild(col);
+    });
+  }
+
+  function renderBuyin() {
+    document.getElementById('buyinValue').innerHTML = fmtYen(buyIn()) + '<span class="unit">/人</span>';
+  }
+
+  function renderPlayers() {
+    var grid = document.getElementById('playersGrid');
+    grid.innerHTML = '';
+    PLAYER_INFO.forEach(function (info) {
+      var name = info.name;
+      var net = state.finals[name] - buyIn();
+      var pillClass = net > 0 ? 'win' : net < 0 ? 'lose' : 'even';
+      var indexClass = RED_SUITS[info.suit] ? 'card-index red' : 'card-index';
+
+      var card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML =
+        '<div class="player-head">' +
+          '<div class="player-name">' + name + '</div>' +
+          '<div class="' + indexClass + '">' + info.rank + info.suit + '</div>' +
+        '</div>' +
+        '<div class="player-buyin">元本 <span class="mono">' + fmtYen(buyIn()) + '</span></div>' +
+        '<div class="final-field">' +
+          '<label for="final-' + name + '">最終</label>' +
+          '<span class="yen-sign">¥</span>' +
+          '<input id="final-' + name + '" type="number" inputmode="numeric" step="1" value="' + state.finals[name] + '">' +
+        '</div>' +
+        '<div class="net-pill ' + pillClass + '">' + fmtSigned(net) + '</div>';
+
+      var input = card.querySelector('input');
+      input.addEventListener('input', function () {
+        var v = parseInt(input.value, 10);
+        state.finals[name] = isNaN(v) ? 0 : v;
+        saveState();
+        renderPlayers();
+        renderSettlement();
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  function computeSettlements() {
+    var nets = PLAYERS.map(function (name) {
+      return { name: name, amount: state.finals[name] - buyIn() };
+    });
+    var creditors = nets.filter(function (n) { return n.amount > 0; })
+      .map(function (n) { return { name: n.name, amount: n.amount }; })
+      .sort(function (a, b) { return b.amount - a.amount; });
+    var debtors = nets.filter(function (n) { return n.amount < 0; })
+      .map(function (n) { return { name: n.name, amount: -n.amount }; })
+      .sort(function (a, b) { return b.amount - a.amount; });
+
+    var result = [];
+    var i = 0, j = 0;
+    while (i < debtors.length && j < creditors.length) {
+      var pay = Math.min(debtors[i].amount, creditors[j].amount);
+      if (pay > 0.5) result.push({ from: debtors[i].name, to: creditors[j].name, amount: Math.round(pay) });
+      debtors[i].amount -= pay;
+      creditors[j].amount -= pay;
+      if (debtors[i].amount <= 0.5) i++;
+      if (creditors[j].amount <= 0.5) j++;
+    }
+    return { transfers: result, nets: nets };
+  }
+
+  function renderSettlement() {
+    var res = computeSettlements();
+    var list = document.getElementById('transferList');
+    list.innerHTML = '';
+
+    if (res.transfers.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'no-transfer';
+      empty.textContent = '精算の必要はありません';
+      list.appendChild(empty);
+    } else {
+      res.transfers.forEach(function (t) {
+        var row = document.createElement('div');
+        row.className = 'transfer-row';
+        row.innerHTML =
+          '<span class="transfer-name from">' + t.from + '</span>' +
+          '<span class="transfer-arrow">→</span>' +
+          '<span class="transfer-name to">' + t.to + '</span>' +
+          '<span class="transfer-amount mono">' + fmtYen(t.amount) + '</span>';
+        list.appendChild(row);
+      });
+    }
+
+    var totalFinal = PLAYERS.reduce(function (s, p) { return s + (state.finals[p] || 0); }, 0);
+    var totalPot = buyIn() * PLAYERS.length;
+    var diff = totalFinal - totalPot;
+    var checkEl = document.getElementById('checkLine');
+    if (diff === 0) {
+      checkEl.className = 'check-line ok';
+      checkEl.innerHTML = '<span class="check-dot"></span>合計 ' + fmtYen(totalFinal) + ' で場の金額と一致';
+    } else {
+      checkEl.className = 'check-line warn';
+      checkEl.innerHTML = '<span class="check-dot"></span>場の合計と ' + fmtYen(Math.abs(diff)) + ' 合いません';
+    }
+  }
+
+  function renderAll() {
+    renderMultRow();
+    renderBuyin();
+    renderPlayers();
+    renderSettlement();
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    PLAYERS.forEach(function (p) { state.finals[p] = buyIn(); });
+    saveState();
+    renderPlayers();
+    renderSettlement();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
