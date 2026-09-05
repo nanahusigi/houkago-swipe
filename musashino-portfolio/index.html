@@ -99,6 +99,28 @@
   .lead{font-size:1.04rem;color:var(--ink);font-weight:500;max-width:38em;}
   .sec-alt{background:var(--paper-2);}
 
+  /* ---- velocity（この5ヶ月の時系列）---- */
+  .velocity{background:var(--ink);color:#fff;padding:62px 0;}
+  .vel-label{
+    display:block;font-size:.74rem;font-weight:900;letter-spacing:.2em;
+    color:#ff5a63;margin-bottom:26px;
+  }
+  .vel-label:before{
+    content:"";display:inline-block;width:30px;height:3px;
+    background:#ff5a63;vertical-align:middle;margin-right:11px;transform:translateY(-2px);
+  }
+  .vel-list{list-style:none;margin:0;padding:0;}
+  .vel-list li{
+    display:grid;grid-template-columns:62px 1fr;
+    gap:0 14px;align-items:baseline;
+    padding:13px 0;border-top:1px solid #322e28;
+  }
+  .vel-list li:last-child{border-bottom:1px solid #322e28;}
+  .vel-list .m{
+    font-size:.82rem;font-weight:900;color:#ff5a63;letter-spacing:.03em;
+  }
+  .vel-list .t{font-size:.94rem;color:#e4ded4;line-height:1.65;}
+
   /* ---- facts ---- */
   .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px;}
   .facts span{
@@ -267,6 +289,11 @@
     .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
     .card{margin-bottom:0;}
 
+    .velocity{padding:78px 0;}
+    .vel-list{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;}
+    .vel-list li:nth-child(2){border-top:1px solid #322e28;}
+    .vel-list li:nth-last-child(2){border-bottom:1px solid #322e28;}
+
     .exs{display:grid;grid-template-columns:1fr 1fr;gap:40px 44px;}
     .ex{margin-bottom:0;}
 
@@ -305,6 +332,20 @@
     </div>
   </div>
 </header>
+
+<section class="velocity">
+  <div class="wrap">
+    <span class="vel-label rv">この5ヶ月</span>
+    <ol class="vel-list">
+      <li class="rv"><span class="m">5月</span><span class="t">地元の美容院に15件以上、飛び込みで営業。契約はゼロ</span></li>
+      <li class="rv"><span class="m">7月</span><span class="t">SNSでの発信に切り替え、美容師さんから初めて仕事の依頼をいただく</span></li>
+      <li class="rv"><span class="m">8月</span><span class="t">「放課後スワイプ」のデモを公開（共同開発）</span></li>
+      <li class="rv"><span class="m">8月</span><span class="t">「くら寿司わりかん電卓」を公開。いまも友達と使っている</span></li>
+      <li class="rv"><span class="m">8月</span><span class="t">手を広げるのをやめ、美容室向けに絞ると決めて専用アカウントを開設</span></li>
+      <li class="rv"><span class="m">9月</span><span class="t">このサイトを公開</span></li>
+    </ol>
+  </div>
+</section>
 
 <section id="who">
   <div class="wrap">
