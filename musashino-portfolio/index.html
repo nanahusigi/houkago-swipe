@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>小澤昊真｜武蔵野大学 総合型選抜 ポートフォリオ</title>
-<meta name="description" content="愛知県の高校生・小澤昊真が実際に作ったものを、その場で触って確かめられるポートフォリオサイト。">
+<meta name="description" content="愛知県の高校生・小澤昊真の歩み。何度も失敗しながら、作りたいという思いだけが消えなかった記録です。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,39 +24,27 @@
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
+    margin:0;background:var(--paper);color:var(--ink);
     font-family:"Noto Sans JP",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
-    line-height:1.9;
-    font-weight:400;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    line-height:1.9;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden;
   }
   img{max-width:100%;display:block;}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
-
   h1,h2,h3{margin:0;font-weight:900;letter-spacing:-0.02em;line-height:1.25;}
   p{margin:0 0 1.1em;color:var(--ink-2);}
 
   /* ============ HERO ============ */
   .hero{position:relative;padding:44px 0 68px;overflow:hidden;}
   .hero-slash{
-    position:absolute;left:0;right:0;bottom:0;height:300px;
-    background:var(--red);
-    clip-path:polygon(0 46%, 100% 0, 100% 100%, 0 100%);
-    pointer-events:none;z-index:0;
+    position:absolute;left:0;right:0;bottom:0;height:300px;background:var(--red);
+    clip-path:polygon(0 46%, 100% 0, 100% 100%, 0 100%);pointer-events:none;z-index:0;
   }
   .hero .wrap{position:relative;z-index:1;}
   .badge{
-    display:inline-block;font-size:.72rem;font-weight:700;
-    letter-spacing:.06em;line-height:1.6;color:#fff;
-    background:var(--ink);padding:6px 13px;margin-bottom:30px;
+    display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+    line-height:1.6;color:#fff;background:var(--ink);padding:6px 13px;margin-bottom:30px;
   }
-  .hero h1{
-    font-size:clamp(2.9rem, 13vw, 4.6rem);
-    line-height:1.12;letter-spacing:-0.045em;margin-bottom:26px;
-  }
+  .hero h1{font-size:clamp(2.9rem,13vw,4.6rem);line-height:1.12;letter-spacing:-0.045em;margin-bottom:26px;}
   .hero h1 .rl{color:var(--red);}
   .whoami{
     display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;
@@ -76,10 +64,7 @@
     position:absolute;inset:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:14px;text-align:center;padding:22px;
   }
-  .video-placeholder .play{
-    width:62px;height:62px;background:var(--red);
-    display:flex;align-items:center;justify-content:center;
-  }
+  .video-placeholder .play{width:62px;height:62px;background:var(--red);display:flex;align-items:center;justify-content:center;}
   .video-placeholder .play svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
   .video-placeholder .msg{font-size:.8rem;color:#aaa39a;letter-spacing:.08em;font-weight:500;}
   .video-caption{margin-top:11px;font-size:.78rem;color:#f2cdcf;font-weight:500;}
@@ -87,138 +72,82 @@
   /* ============ SECTIONS ============ */
   section{padding:92px 0;position:relative;}
   .sec-head{margin-bottom:14px;}
-  .sec-num{
-    display:block;font-size:.78rem;font-weight:900;
-    letter-spacing:.22em;color:var(--red);margin-bottom:14px;
-  }
+  .sec-num{display:block;font-size:.78rem;font-weight:900;letter-spacing:.22em;color:var(--red);margin-bottom:14px;}
   .sec-num:before{
-    content:"";display:inline-block;width:34px;height:3px;
-    background:var(--red);vertical-align:middle;margin-right:11px;transform:translateY(-2px);
+    content:"";display:inline-block;width:34px;height:3px;background:var(--red);
+    vertical-align:middle;margin-right:11px;transform:translateY(-2px);
   }
-  h2{font-size:clamp(2rem, 7vw, 2.9rem);line-height:1.24;margin-bottom:24px;}
+  h2{font-size:clamp(2rem,7vw,2.9rem);line-height:1.24;margin-bottom:24px;}
   .lead{font-size:1.04rem;color:var(--ink);font-weight:500;max-width:38em;}
   .sec-alt{background:var(--paper-2);}
 
-  /* ---- velocity（この5ヶ月の時系列）---- */
-  .velocity{background:var(--ink);color:#fff;padding:62px 0;}
-  .vel-label{
-    display:block;font-size:.74rem;font-weight:900;letter-spacing:.2em;
-    color:#ff5a63;margin-bottom:26px;
-  }
-  .vel-label:before{
-    content:"";display:inline-block;width:30px;height:3px;
-    background:#ff5a63;vertical-align:middle;margin-right:11px;transform:translateY(-2px);
-  }
-  .vel-list{list-style:none;margin:0;padding:0;}
-  .vel-list li{
-    display:grid;grid-template-columns:62px 1fr;
-    gap:0 14px;align-items:baseline;
-    padding:13px 0;border-top:1px solid #322e28;
-  }
-  .vel-list li:last-child{border-bottom:1px solid #322e28;}
-  .vel-list .m{
-    font-size:.82rem;font-weight:900;color:#ff5a63;letter-spacing:.03em;
-  }
-  .vel-list .t{font-size:.94rem;color:#e4ded4;line-height:1.65;}
-
   /* ---- facts ---- */
   .facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px;}
-  .facts span{
-    font-size:.82rem;font-weight:700;color:var(--ink);
-    border:2px solid var(--ink);padding:6px 14px;
+  .facts span{font-size:.82rem;font-weight:700;color:var(--ink);border:2px solid var(--ink);padding:6px 14px;}
+
+  /* ============ STORY ============ */
+  .story{max-width:40em;margin:52px 0 0;}
+  .chapter{
+    margin:0 0 10px;padding-top:44px;
+    border-top:3px solid var(--ink);
+  }
+  .story > .chapter:first-of-type{padding-top:0;border-top:none;}
+  .ch-no{
+    display:inline-block;font-size:.7rem;font-weight:900;letter-spacing:.16em;
+    color:#fff;background:var(--red);padding:2px 9px;margin-bottom:12px;
+  }
+  .chapter h3{font-size:clamp(1.4rem,5.4vw,1.9rem);line-height:1.35;margin-bottom:6px;}
+  .ch-when{font-size:.8rem;color:var(--ink-3);font-weight:700;letter-spacing:.04em;}
+
+  .ep{padding:30px 0 4px;}
+  .ep-when{font-size:.72rem;font-weight:900;letter-spacing:.1em;color:var(--red);margin-bottom:7px;}
+  .ep h4{
+    font-size:1.14rem;font-weight:900;line-height:1.5;
+    margin:0 0 12px;letter-spacing:-0.01em;
+  }
+  .ep p{font-size:.96rem;margin-bottom:1em;}
+  .ep p:last-child{margin-bottom:0;}
+  .feel{
+    border-left:4px solid var(--red);
+    padding:2px 0 2px 16px;margin-top:16px;
+    font-size:.96rem;color:var(--ink);font-weight:500;line-height:1.85;
   }
 
-  /* ---- works (作ったもの) ---- */
+  /* ---- works ---- */
   .works{margin-top:46px;}
-  .work{
-    background:var(--paper-2);border:3px solid var(--ink);
-    padding:0 0 28px;margin-bottom:26px;
-  }
+  .work{background:var(--paper-2);border:3px solid var(--ink);padding:0 0 28px;margin-bottom:26px;}
   .sec-alt .work{background:var(--paper);}
   .work:last-child{margin-bottom:0;}
-  .shot{
-    border-bottom:3px solid var(--ink);
-    background:var(--ink);
-    overflow:hidden;
-    max-height:340px;
-  }
+  .shot{border-bottom:3px solid var(--ink);background:var(--ink);overflow:hidden;max-height:340px;}
   .shot img{width:100%;height:auto;object-position:top;}
   .work-body{padding:26px 24px 0;}
-  .work-meta{
-    font-size:.72rem;font-weight:900;letter-spacing:.12em;
-    color:var(--red);margin-bottom:9px;
-  }
-  .work h3{font-size:clamp(1.3rem, 4.8vw, 1.7rem);line-height:1.35;margin-bottom:14px;}
+  .work-meta{font-size:.72rem;font-weight:900;letter-spacing:.12em;color:var(--red);margin-bottom:9px;}
+  .work h3{font-size:clamp(1.3rem,4.8vw,1.7rem);line-height:1.35;margin-bottom:14px;}
   .work p{font-size:.95rem;margin-bottom:1em;}
   .work p:last-of-type{margin-bottom:0;}
   .specs{list-style:none;margin:16px 0 0;padding:0;}
-  .specs li{
-    font-size:.88rem;color:var(--ink-2);
-    padding-left:20px;position:relative;margin-bottom:5px;
-  }
-  .specs li:before{
-    content:"";position:absolute;left:0;top:.72em;
-    width:9px;height:3px;background:var(--red);
-  }
-
-  /* ---- narrative cards ---- */
-  .cards{margin-top:46px;}
-  .card{
-    background:var(--paper-2);border:3px solid var(--ink);
-    padding:30px 26px 28px;margin-bottom:22px;
-  }
-  .sec-alt .card{background:var(--paper);}
-  .card:last-child{margin-bottom:0;}
-  .card-meta{
-    font-size:.72rem;font-weight:900;letter-spacing:.12em;
-    color:var(--red);margin-bottom:9px;
-  }
-  .card h3{font-size:clamp(1.25rem, 4.6vw, 1.55rem);line-height:1.35;margin-bottom:14px;}
-  .card p{font-size:.95rem;margin-bottom:0;}
-  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;}
-  .chips span{
-    font-size:.74rem;font-weight:700;color:var(--ink-2);
-    background:var(--paper);padding:4px 11px;
-  }
-  .sec-alt .chips span{background:var(--paper-2);}
+  .specs li{font-size:.88rem;color:var(--ink-2);padding-left:20px;position:relative;margin-bottom:5px;}
+  .specs li:before{content:"";position:absolute;left:0;top:.72em;width:9px;height:3px;background:var(--red);}
   .card-link{
-    display:inline-block;margin-top:18px;font-size:.86rem;font-weight:900;
-    letter-spacing:.04em;color:#fff;background:var(--red);
-    padding:11px 22px;text-decoration:none;transition:background .15s;
+    display:inline-block;margin-top:18px;font-size:.86rem;font-weight:900;letter-spacing:.04em;
+    color:#fff;background:var(--red);padding:11px 22px;text-decoration:none;transition:background .15s;
   }
   .card-link:hover{background:var(--red-deep);}
   .card-link:after{content:" →";}
 
   /* ---- live embed ---- */
   .live{margin:0 0 26px;border:3px solid var(--ink);background:var(--ink);}
-  .live-bar{
-    display:flex;align-items:center;gap:10px;
-    padding:11px 16px;background:var(--ink);color:#fff;
-  }
-  .live-bar .dot{
-    width:9px;height:9px;background:var(--red);border-radius:50%;
-    flex:none;animation:pulse 1.8s ease-in-out infinite;
-  }
+  .live-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--ink);color:#fff;}
+  .live-bar .dot{width:9px;height:9px;background:var(--red);border-radius:50%;flex:none;animation:pulse 1.8s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .live-bar span{font-size:.76rem;font-weight:900;letter-spacing:.1em;}
   .live iframe{display:block;width:100%;height:620px;border:0;background:#fff;}
   .only-desktop{display:none;}
 
   /* ---- cycle ---- */
-  .cycle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:38px 0 52px;}
+  .cycle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:34px 0 0;}
   .cycle b{font-size:.86rem;font-weight:900;color:#fff;background:var(--ink);padding:8px 15px;}
   .cycle i{font-style:normal;color:var(--red);font-weight:900;}
-
-  /* ---- examples ---- */
-  .ex{border-left:5px solid var(--red);padding:2px 0 2px 22px;margin-bottom:40px;}
-  .ex:last-child{margin-bottom:0;}
-  .ex h3{font-size:1.15rem;margin-bottom:16px;}
-  .ex dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 16px;}
-  .ex dt{
-    font-size:.7rem;font-weight:900;letter-spacing:.08em;
-    color:var(--red);white-space:nowrap;padding-top:5px;
-  }
-  .ex dd{margin:0;font-size:.95rem;color:var(--ink-2);}
 
   /* ---- timeline ---- */
   .tl{margin-top:46px;}
@@ -233,10 +162,7 @@
 
   /* ---- closing ---- */
   .closing{margin-top:60px;background:var(--ink);color:#fff;padding:44px 30px;}
-  .closing p{
-    color:#fff;font-size:clamp(1.3rem, 5vw, 1.9rem);font-weight:900;
-    line-height:1.55;letter-spacing:-0.02em;margin:0;
-  }
+  .closing p{color:#fff;font-size:clamp(1.3rem,5vw,1.9rem);font-weight:900;line-height:1.55;letter-spacing:-0.02em;margin:0;}
   .closing .rl{color:#ff5a63;}
 
   footer{padding:44px 22px 66px;text-align:center;font-size:.76rem;color:var(--ink-3);line-height:2;}
@@ -249,56 +175,31 @@
     html{scroll-behavior:auto;}
   }
 
-  /* ============ TABLET ============ */
   @media (min-width:700px){
     .hero{padding:56px 0 104px;}
     .hero-slash{height:460px;clip-path:polygon(0 34%, 100% 0, 100% 100%, 0 100%);}
     section{padding:112px 0;}
-    .card{padding:36px 34px 32px;}
     .work-body{padding:30px 34px 0;}
     .closing{padding:56px 48px;}
+    .ep{padding:36px 0 4px;}
   }
 
-  /* ============ DESKTOP ============ */
   @media (min-width:960px){
     .hero{padding:64px 0 120px;}
     .hero-grid{display:grid;grid-template-columns:1.02fr 1fr;gap:56px;align-items:center;}
     .hero h1{font-size:4.3rem;}
     .hero .sub{margin-bottom:0;}
-    /* PCでは赤面を右側（動画の後ろ）に置く。左の見出しに重ねない */
     .hero-slash{
-      left:auto;right:0;top:0;bottom:0;
-      width:48%;height:auto;
+      left:auto;right:0;top:0;bottom:0;width:48%;height:auto;
       clip-path:polygon(22% 0, 100% 0, 100% 100%, 4% 100%);
     }
-
     h2{font-size:3rem;}
     .lead{font-size:1.1rem;}
-
-    /* 作ったもの：画像を横に置く */
     .work{display:grid;grid-template-columns:392px 1fr;padding:0;align-items:stretch;}
-    .shot{
-      border-bottom:none;border-right:3px solid var(--ink);
-      max-height:none;
-    }
+    .shot{border-bottom:none;border-right:3px solid var(--ink);max-height:none;}
     .shot img{height:100%;object-fit:cover;object-position:top center;}
     .work-body{padding:38px;}
     .work-wide{display:block;}
-
-    /* 実績カードは2列 */
-    .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    .card{margin-bottom:0;}
-
-    .velocity{padding:78px 0;}
-    .vel-list{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;}
-    .vel-list li:nth-child(2){border-top:1px solid #322e28;}
-    .vel-list li:nth-last-child(2){border-bottom:1px solid #322e28;}
-
-    .exs{display:grid;grid-template-columns:1fr 1fr;gap:40px 44px;}
-    .ex{margin-bottom:0;}
-
-    .tl{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;}
-
     .live iframe{height:700px;}
     .only-desktop{display:block;}
   }
@@ -317,7 +218,7 @@
           <span class="nm">小澤 昊真</span>
           <span class="mt">愛知県の高校生</span>
         </div>
-        <p class="sub">紙に書けるのは、やったことの要約だけでしたので、ここには<b>実際に作って動いているもの</b>を置いてあります。読むだけでなく、その場で触って確かめてみてください。</p>
+        <p class="sub">紙に書けるのは、やったことの要約だけでしたので、ここには<b>そこに至るまでの過程</b>を置いてあります。うまくいかなかったことの方がずっと多いのですが、そこも含めて読んでいただけたらうれしいです。</p>
       </div>
       <div class="hero-media">
         <div class="video-box">
@@ -333,20 +234,6 @@
   </div>
 </header>
 
-<section class="velocity">
-  <div class="wrap">
-    <span class="vel-label rv">この5ヶ月</span>
-    <ol class="vel-list">
-      <li class="rv"><span class="m">5月</span><span class="t">地元の美容院に15件以上、飛び込みで営業。契約はゼロ</span></li>
-      <li class="rv"><span class="m">7月</span><span class="t">SNSでの発信に切り替え、美容師さんから初めて仕事の依頼をいただく</span></li>
-      <li class="rv"><span class="m">8月</span><span class="t">「放課後スワイプ」のデモを公開（共同開発）</span></li>
-      <li class="rv"><span class="m">8月</span><span class="t">「くら寿司わりかん電卓」を公開。いまも友達と使っている</span></li>
-      <li class="rv"><span class="m">8月</span><span class="t">手を広げるのをやめ、美容室向けに絞ると決めて専用アカウントを開設</span></li>
-      <li class="rv"><span class="m">9月</span><span class="t">このサイトを公開</span></li>
-    </ol>
-  </div>
-</section>
-
 <section id="who">
   <div class="wrap">
     <div class="sec-head rv">
@@ -357,18 +244,170 @@
     <p class="lead rv">昔は、思いついても行動に移せませんでした。それでも少しずつできるようになってきて、その積み重ねが「いつか何か大きなことを成し遂げる」という、根拠のない確信になっているのだと思います。</p>
     <div class="facts rv">
       <span>生徒会長／1,200人規模</span>
+      <span>水泳を小3から継続</span>
       <span>AI活用 500時間超</span>
     </div>
   </div>
 </section>
 
-<section id="works" class="sec-alt">
+<section id="story" class="sec-alt">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="sec-num">02 ／ 作ったもの</span>
+      <span class="sec-num">02 ／ これまでの歩み</span>
+      <h2>ほとんど、<br>うまくいっていません</h2>
+    </div>
+    <p class="lead rv">2025年の春から今日までに手を出したことと、そのときに何を思っていたかを、順番に書きました。成功した話はあまり出てきません。それでも、作りたい・誰かと何かを成し遂げたいという気持ちだけは消えませんでした。</p>
+
+    <div class="story">
+
+      <!-- ============ 第1章 ============ -->
+      <div class="chapter rv">
+        <span class="ch-no">CHAPTER 1</span>
+        <h3>始まり</h3>
+        <div class="ch-when">2025年 春 〜 2025年 11月</div>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2025年 春</div>
+        <h4>「受験勉強じゃなく、世の中の仕組みとAIを勉強しなさい」</h4>
+        <p>友人のお父さんが経営者で、その方のお店によく遊びに行っていました。あるとき言われたのがこの一言です。自分の進路を、初めて自分の頭で疑いました。そこからSNSでビジネスの情報を集め始めたのですが、何をすればいいのかは全く分かりませんでした。</p>
+        <p class="feel">やりたいことも、できることも分からないまま、とにかく浴びるように情報を見ていた時期でした。</p>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2025年 11月</div>
+        <h4>1,200人の前で、話すことになった</h4>
+        <p>後期の生徒会長になりました。全校生徒の前で何度もスピーチをすることになり、途中からはカンペなしの即興でも話せるようになりました。最初は当然緊張しましたが、「緊張してもいいことがない」と割り切ってからは平気になりました。</p>
+        <p class="feel">人からどう見られるかを、あまり気にしなくなりました。周りに「起業する」と言えるようになったのは、このあとからです。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>先生が、泣いていた</h4>
+        <p>新入生を迎えるスピーチのとき、用意した完璧な言葉ではなく、自分が思っていることをそのまま話しました。終わったあと、高校1年のころに卒業式をサボってカラオケに行っていた自分を知っている先生が、泣いていました。</p>
+        <p class="feel">整った言葉よりも、感情が声に乗っていることの方が強い。このときの感覚は、今も自分の中に残っています。</p>
+      </div>
+
+      <!-- ============ 第2章 ============ -->
+      <div class="chapter rv">
+        <span class="ch-no">CHAPTER 2</span>
+        <h3>打っては、外し続けた</h3>
+        <div class="ch-when">2025年 〜 2026年 前半</div>
+      </div>
+
+      <div class="ep rv">
+        <h4>動画AIで稼ごうとして、外した</h4>
+        <p>最初に手を出したのは、生成AIで動画を作って収益化する方法でした。やってみると同じことをしている人が大量にいて、まったく差別化できないまま終わりました。</p>
+        <p class="feel">一発目から空振りでした。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>noteを書いても、1本も売れなかった</h4>
+        <p>次に、高校生が起業に挑戦する体験談をnoteの記事にして出しました。1本も売れませんでした。そのあと、学んだ営業のコツをまとめた記事も出しましたが、いいねが2件ついただけでした。</p>
+        <p class="feel">内容さえ良くすれば読まれると思っていました。そもそも読む人がいない、という発想が自分にありませんでした。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>6人と話して、全員が勧誘だった</h4>
+        <p>発信をしていると、大人の方から声がかかるようになりました。Zoomで6人と話しましたが、結局はすべて何かの勧誘でした。</p>
+        <p class="feel">最初はいい人だと思っていたので、正直こたえました。ただ、その6件を「営業の手口と話の運び方の教材」として分析し直しました。悔しさの使い道が、たぶんこのときに決まりました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>年間20万円と言われた</h4>
+        <p>そのうちの一つが、年間20万円の起業支援コンサルへの勧誘でした。親は起業すること自体には反対しませんでしたが、そこにお金を払うことには反対しました。当然だと思います。</p>
+        <p class="feel">20万円は、子どもが自分の力で用意できる額ではありません。お金があるかどうかで挑戦のスタートラインが決まってしまうことに、このとき初めて腹が立ちました。</p>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 5月</div>
+        <h4>15件まわって、契約ゼロ</h4>
+        <p>地元の美容院に、飛び込みと電話で15件以上まわりました。結果は契約ゼロです。</p>
+        <p class="feel">正直、心が折れかけました。それでも「話し方が下手だった」で終わらせたくなくて考え直したら、そもそも悩みを持っていない相手に営業していたことに気づきました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>オーディションは、2次で落ちた</h4>
+        <p>起業を志す人向けのオーディションに応募し、2次審査のZoomまで進みましたが落選しました。半年ほど経ってから、実現可能性・ターゲットの決め方・収益化・伝える力・資金調達という5つの軸で、当時の自分に何が足りなかったのかを検証し直しました。</p>
+        <p class="feel">落ちたこと自体より、落ちた理由を自分の言葉で説明できないことの方が嫌でした。</p>
+      </div>
+
+      <!-- ============ 第3章 ============ -->
+      <div class="chapter rv">
+        <span class="ch-no">CHAPTER 3</span>
+        <h3>手応えと、その裏側</h3>
+        <div class="ch-when">2026年 6月 〜 7月</div>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 6月</div>
+        <h4>0.7秒、届かなかった</h4>
+        <p>水泳を小学3年から続けています。高校3年最後の大会で、50mクロールが26.7秒。県大会に個人で出るための基準に、0.7秒足りませんでした。筋トレを独学で調べて、1年でタイムを1秒縮めた先での0.7秒でした。</p>
+        <p class="feel">初めて「悔しい」と思った水泳でした。そして、そこで初めて水泳が楽しくなりました。</p>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 7月</div>
+        <h4>フォロワー29人の投稿が、届いた</h4>
+        <p>「美容院さん、リール動画を無料で作ります」という投稿をThreadsに出しました。フォロワー29人の状態で、表示7,000回超・いいね37・返信29件まで伸びました。</p>
+        <p class="feel">初めて「届いた」と思えました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>でも、二度目は起きなかった</h4>
+        <p>同じ日に出した別の投稿は、いいねが2件。5日後に同じ型を使い回した投稿も、ほとんど反応がありませんでした。</p>
+        <p class="feel">運だったのか設計だったのかが分からず、そこからは一本ずつ何が違うのかを確かめては書き直す、という作業がずっと続きました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>初めて、最後までやり切った</h4>
+        <p>その投稿から連絡をくださった美容師さんのご依頼で、リサーチ、構成の設計、制作、納品までを一人でやり切りました。頼まれていないキャプション文まで一緒に提案したところ、相手の方から次のご依頼をいただきました。</p>
+        <p class="feel">途中で投げ出さずに最後まで終わらせたのは、このときが初めてでした。</p>
+      </div>
+
+      <!-- ============ 第4章 ============ -->
+      <div class="chapter rv">
+        <span class="ch-no">CHAPTER 4</span>
+        <h3>一人では、限界だった</h3>
+        <div class="ch-when">2026年 8月</div>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 8月</div>
+        <h4>頭の中の絵が、相手に映らなかった</h4>
+        <p>共同創業者の片山シュンと、初めての打ち合わせをしました。ビジネスモデルやお金の流れは伝えられたのですが、自分の頭の中にある画面や体験を、相手の頭に同じ解像度で再生させることができませんでした。話している間、相手の表情が動きませんでした。</p>
+        <p class="feel">情報は伝わっても、体験としては伝わっていない。自分の言語化力の限界を、はっきり突きつけられました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>「誰が使うだ笑」と言われた</h4>
+        <p>別の友人に、初めて第三者として構想を説明しました。反応はかなり批判的で、「ただのマッチングアプリやん」「そこまで便利じゃないし」「無理だと思います」と言われました。どうやっておすすめを出すのかと聞かれて「AIで」としか答えられず、「頭使え」と返されました。答えになるデモを持っていたのに、その場で出せませんでした。</p>
+        <p class="feel">悔しかったです。ただ、あとで整理してみると、批判の中身は自分が立てていた検証計画とほとんど同じでした。方向は間違っていなかったと分かりました。</p>
+      </div>
+
+      <div class="ep rv">
+        <h4>一人でやるのを、やめた</h4>
+        <p>アイデアの幅も、行動量も、精神的な面も、一人では限界だと判断しました。迷わず仲間を集めることにして、今は共同創業者と一緒に事業の検証を始めています。</p>
+        <p class="feel">環境が人を変えると、本気で思っています。</p>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 8月末</div>
+        <h4>手を広げるのを、やめた</h4>
+        <p>案件を重ねるうちに、美容師さん側に共通する悩みが見えてきました。それまで色々な分野に手を出していましたが、美容室向けのSNS支援に絞ると決めて、専用のアカウントを新しく立ち上げました。</p>
+        <p class="feel">これまではずっと、0から1を作っては次に行っていました。一つを続けると決めたのは、これが初めてです。</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="works">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">03 ／ 作ったもの</span>
       <h2>ここから先は、<br>触って確かめていただけます</h2>
     </div>
-    <p class="lead rv">説明を読んでいただくより、実際に動かしてもらったほうが早いと思っています。下にあるものはすべて、企画からコードまで自分で書いて、いまも実際に動いているものです。</p>
+    <p class="lead rv">うまくいかないことが続く中でも、作ること自体はずっと続けてきました。下にあるものはすべて、企画からコードまで自分で書いて、いまも実際に動いているものです。</p>
 
     <div class="works">
 
@@ -400,7 +439,7 @@
           <div class="work-meta">共同開発 ／ 片山シュンと</div>
           <h3>放課後スワイプ</h3>
           <p>高校生が放課後に「今日どこ行く」を決められないという問題に対して、店選びだけでなく誘う役までアプリが引き受けてくれたらいいのではないか、という構想です。スワイプから好みを抽出して、友達と時間が合ったときだけ両方に同時に通知が届くようにしています。</p>
-          <p>共同創業者の片山シュンと打ち合わせを重ねながら、頭の中にある構想を相手に同じ解像度で伝える難しさと向き合っているところです。下のデモは実際にスワイプしていただけます。</p>
+          <p>先ほど書いた「相手に伝わらなかった」打ち合わせは、このアプリのものです。いまも二人で議論を重ねながら進めています。下のデモは実際にスワイプしていただけます。</p>
           <ul class="specs">
             <li>スワイプした結果から、好みを6軸に分解</li>
             <li>「今日の1軒」が必ず1つ決まる（選ぶ責任を渡さない）</li>
@@ -414,57 +453,13 @@
         <div class="work-body">
           <div class="work-meta">制作</div>
           <h3>いま見ているこのサイトも</h3>
-          <p>このページ自体も、デザインからコードまで自分で書いています。紙の要約をきれいに並べ直すのではなく、作ったものをその場で触っていただくために作りました。Webサイトを自分で作れること自体も、見ていただきたいものの一つです。</p>
+          <p>このページ自体も、デザインからコードまで自分で書いています。紙の要約をきれいに並べ直すのではなく、そこに至るまでの過程を読んでいただくために作りました。Webサイトを自分で作れること自体も、見ていただきたいものの一つです。</p>
         </div>
       </div>
 
     </div>
-  </div>
-</section>
 
-<section id="did">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="sec-num">03 ／ 動いた記録</span>
-      <h2>うまくいかなかった<br>ところから</h2>
-    </div>
-    <p class="lead rv">ここでは「やりたい」ではなく、実際に外に出て動いたことだけを書いています。</p>
-
-    <div class="cards">
-
-      <div class="card rv">
-        <div class="card-meta">営業 ／ 2026年5〜7月</div>
-        <h3>15件まわって、契約ゼロ</h3>
-        <p>地元の美容院に15件以上、飛び込みで営業しました。結果は契約ゼロで、正直、心が折れかけました。それでも「話し方が下手だった」で終わらせたくなくて、そもそも悩みを持っていない相手に営業していたのではないか、と考え直しました。だったら、悩んでいる人のほうから出てきてくれる場所に行けばいいのではないかと思い、SNSでの発信に切り替えました。</p>
-        <div class="chips"><span># 失敗で終わらせない</span><span># 考え直して動き直す</span></div>
-      </div>
-
-      <div class="card rv">
-        <div class="card-meta">SNS ／ 2026年7月</div>
-        <h3>切り替えてからが、長かった</h3>
-        <p>場所を変えればすぐ届く、という話ではありませんでした。同じアカウント・同じフォロワー数でも、反応がある投稿とほとんど無反応の投稿があります。何が違ったのかを一本ずつ確かめては書き直す、ということを繰り返しました。その積み重ねの先で、美容師さんから初めて仕事の依頼をいただくことができました。（フォロワー29人の時点で、表示7,000回超・いいね37・返信29件）</p>
-        <div class="chips"><span># 一本ずつ検証する</span><span># 分析して書き直す</span></div>
-      </div>
-
-      <div class="card rv">
-        <div class="card-meta">進行中 ／ 2026年8月〜</div>
-        <h3>手を広げず、美容室に絞る</h3>
-        <p>無料でリール制作を募集したところ、美容師8名の方から応募をいただきました。そのうち1件は「無料でなく本気で頼みたい」と言っていただき、リサーチから構成設計・制作・納品まで一人でやり切りました。案件を重ねるうちに、美容師さん側に共通する悩み（動画の知識がない、素材の撮り方がバラバラ）が見えてきたので、色々な分野に手を広げるのをやめて美容室向けに絞ると決め、専用アカウントを立ち上げて動いています。</p>
-        <div class="chips"><span># 一つに絞る</span><span># 続けて経験を積む</span></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<section id="think" class="sec-alt">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="sec-num">04 ／ 考え方</span>
-      <h2>気づいて、作って、<br>見せて、直す</h2>
-    </div>
-    <p class="lead rv">SNSで人の悩みや情報を見聞きしても、分かった気になるだけでした。本当に変えたいと思えるのは、いつも自分が当事者として困ったときだったので、気づいたらまず自分で作ってみるようにしています。この動き方をずっと繰り返しています。</p>
-
+    <p class="lead rv" style="margin-top:52px">ここまでの失敗に共通しているのは、うまくいかなかったときに、原因を自分の能力のせいにしなかったことだと思っています。何度も外しながら、この順番だけはずっと変わっていません。</p>
     <div class="cycle rv">
       <b>課題を見つける</b><i>▶</i>
       <b>まず作る</b><i>▶</i>
@@ -472,42 +467,13 @@
       <b>反応を見る</b><i>▶</i>
       <b>改善する</b>
     </div>
-
-    <div class="exs">
-      <div class="ex rv">
-        <h3>不満を、動作まで分解する</h3>
-        <dl>
-          <dt>気づき</dt><dd>「めんどくさい」で止めている限り、何が問題なのか自分でも分かっていませんでした</dd>
-          <dt>やった</dt><dd>どの動作がなぜ重いのかを7つに書き出し、そのまま作るものの中身にしました</dd>
-          <dt>結果</dt><dd>迷わず作り切れて、実際に友達と使えるものになりました</dd>
-        </dl>
-      </div>
-
-      <div class="ex rv">
-        <h3>失敗を、能力のせいにしない</h3>
-        <dl>
-          <dt>気づき</dt><dd>契約ゼロは「話し方」ではなく、悩みのない相手に営業していたからでした</dd>
-          <dt>やった</dt><dd>悩んでいる人のほうから出てくる場所に移り、投稿を一本ずつ検証して書き直しました</dd>
-          <dt>結果</dt><dd>分析と改善を重ねた先で、初めて仕事の依頼につながりました</dd>
-        </dl>
-      </div>
-
-      <div class="ex rv">
-        <h3>広げるのをやめて、絞る</h3>
-        <dl>
-          <dt>気づき</dt><dd>案件を重ねるほど、美容師さん側に共通する悩みがはっきり見えてきました</dd>
-          <dt>やった</dt><dd>色々な分野に手を出すのをやめ、美容室向けに一本化すると決めました</dd>
-          <dt>結果</dt><dd>専用アカウントを新しく立ち上げ、いままさに動かしているところです</dd>
-        </dl>
-      </div>
-    </div>
   </div>
 </section>
 
-<section id="next">
+<section id="next" class="sec-alt">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="sec-num">05 ／ これから</span>
+      <span class="sec-num">04 ／ これから</span>
       <h2>一人で作る、から<br>仲間と作る、へ</h2>
     </div>
 
@@ -535,7 +501,7 @@
     </div>
 
     <div class="closing rv">
-      <p>退屈だと思ったら、<br>また<span class="rl">何か作る</span>。<br>それを、続けていきます。</p>
+      <p>ほとんど失敗しました。<br>それでも<span class="rl">作りたい</span>が、<br>消えませんでした。</p>
     </div>
   </div>
 </section>
