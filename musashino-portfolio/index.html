@@ -113,6 +113,27 @@
     font-size:.96rem;color:var(--ink);font-weight:500;line-height:1.85;
   }
 
+  /* ---- insight（インサイト表示）---- */
+  .insight{border:3px solid var(--ink);background:var(--paper);margin:20px 0 18px;}
+  .sec-alt .insight{background:var(--paper-2);}
+  .ins-row{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line);}
+  .ins-row div{padding:16px 6px;text-align:center;border-right:1px solid var(--line);}
+  .ins-row div:last-child{border-right:none;}
+  .ins-row .n{
+    display:block;font-size:clamp(1.5rem,6.4vw,2.1rem);font-weight:900;
+    line-height:1.1;letter-spacing:-0.03em;color:var(--red);
+  }
+  .ins-row .l{font-size:.7rem;color:var(--ink-3);font-weight:700;letter-spacing:.06em;}
+  .ins-note{
+    font-size:.72rem;font-weight:900;letter-spacing:.1em;
+    color:var(--ink-3);padding:14px 16px 0;
+  }
+  .ins-tags{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 16px;}
+  .ins-tags span{
+    font-size:.76rem;font-weight:700;color:#fff;background:var(--ink);padding:4px 10px;
+  }
+  .ins-src{font-size:.7rem;color:var(--ink-3);padding:0 16px 14px;}
+
   /* ---- works ---- */
   .works{margin-top:46px;}
   .work{background:var(--paper-2);border:3px solid var(--ink);padding:0 0 28px;margin-bottom:26px;}
@@ -395,6 +416,24 @@
         <h4>手を広げるのを、やめた</h4>
         <p>案件を重ねるうちに、美容師さん側に共通する悩みが見えてきました。それまで色々な分野に手を出していましたが、美容室向けのSNS支援に絞ると決めて、専用のアカウントを新しく立ち上げました。</p>
         <p class="feel">これまではずっと、0から1を作っては次に行っていました。一つを続けると決めたのは、これが初めてです。</p>
+      </div>
+
+      <div class="ep rv">
+        <div class="ep-when">2026年 9月</div>
+        <h4>絞ったら、届く相手が変わった</h4>
+        <p>専用アカウントを作ってから、2週間ほど経ちました。フォロワーは1人のままです。それでも投稿は届いていて、閲覧数は3,493、実際に見てくださった方は2,740人になりました。</p>
+        <div class="insight">
+          <div class="ins-row">
+            <div><span class="n">3,493</span><span class="l">閲覧数</span></div>
+            <div><span class="n">2,740</span><span class="l">閲覧者</span></div>
+            <div><span class="n">1</span><span class="l">フォロワー</span></div>
+          </div>
+          <div class="ins-note">見てくださっている方の興味・関心</div>
+          <div class="ins-tags"><span>美容師</span><span>美容室</span><span>美容</span><span>縮毛矯正</span><span>ヘアケア</span></div>
+          <div class="ins-src">Threads インサイト（2026年8月23日〜9月5日）</div>
+        </div>
+        <p>数字の大きさよりも、届いている相手が美容師さんと美容室に集中していることの方が大事だと思っています。狙った相手にだけ届いているという意味なので。一方で、1本で1,325回まで伸びた投稿もあれば、6回で止まった投稿もあります。</p>
+        <p class="feel">フォロワーの数ではなく、誰に届いたかで見るようになりました。そして、伸びなかった投稿の方が、次に何を直せばいいのかを教えてくれます。</p>
       </div>
 
     </div>
